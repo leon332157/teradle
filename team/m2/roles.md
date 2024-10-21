@@ -8,14 +8,14 @@
   3. [Commit 3](https://github.com/repo/commit3): Drafted the initial version of the `problem.md` file and facilitated team feedback to finalize it.
 
 ## Phoebe Lo - Timekeeper
-- **Role**: Manages the timing of all team activities. Bob ensures that meetings start and end on time, keeps track of deadlines, and reminds the team of upcoming due dates.
+- **Role**: Manages the timing of all team activities. Phoebe ensures that meetings start and end on time, keeps track of deadlines, and reminds the team of upcoming due dates.
 - **Top 3 Commits**:
   1. [Commit 1](https://github.com/repo/commit1): Documented the team’s meeting schedule and deadlines in `roles.md`, ensuring clarity for all members.
   2. [Commit 2](https://github.com/repo/commit2): Created a timeline for milestone deliverables, making sure the team stays on track.
   3. [Commit 3](https://github.com/repo/commit3): Added meeting reminders and deadline notifications to the team's Slack channel to keep everyone on schedule.
 
 ## Selena Lo - Note taker
-- **Role**: Records detailed notes during meetings and ensures that action items are clearly communicated. Carol is responsible for distributing meeting minutes to the team after each session.
+- **Role**: Records detailed notes during meetings and ensures that action items are clearly communicated. Selena is responsible for distributing meeting minutes to the team after each session.
 - **Top 3 Commits**:
   1. [Commit 1](https://github.com/repo/commit1): Recorded and distributed notes from the first brainstorming meeting, documenting the team’s initial ideas for the project.
   2. [Commit 2](https://github.com/repo/commit2): Summarized team discussions on feature prioritization and updated the `features.md` file with finalized features.
