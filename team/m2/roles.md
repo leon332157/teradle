@@ -35,12 +35,12 @@
   2. [Commit 2](https://github.com/repo/commit2): Coordinated communication between team members during the second milestone and relayed critical information about deadlines.
   3. [Commit 3](https://github.com/repo/commit3): Managed Slack updates by setting up automatic reminders for tasks and meetings.
 
-## Ethan Shim - Quality Control
-- **Role**: Reviews team submissions and ensures that all deliverables meet the necessary quality standards. Frank is responsible for proofreading and ensuring the accuracy of all documents before submission.
+## Eungyu Shim - Quality Controll
+- **Role**: Focuses on creating and refining the user interface design. Eungyu is responsible for developing the visual aspects of the project, ensuring an intuitive and engaging user experience.
 - **Top 3 Commits**:
-  1. [Commit 1](https://github.com/repo/commit1): Reviewed and edited the `problem.md` file to ensure clarity and alignment with the project requirements.
-  2. [Commit 2](https://github.com/repo/commit2): Proofread and revised the `features.md` file, ensuring that descriptions were clear and complete.
-  3. [Commit 3](https://github.com/repo/commit3): Conducted a final quality check of all milestone documents before submission to ensure accuracy and completeness.
+  1. [Commit 1](https://github.com/repo/commit1): Created and finalized the UI Diagrams, including the **Question Screen**, **Feedback Screens**, and **End Game Screen** for the quiz game.
+  2. [Commit 2](https://github.com/repo/commit2): Collaborated with the team in project meetings to gather feedback and share ideas for improving the overall design of the game interface.
+  3. [Commit 3](https://github.com/repo/commit3): Implemented updates to the **UI Diagrams** based on feedback from the team, ensuring that the design aligns with the gameplay mechanics and user flow.
 
 ## Sid Mishra - Documentation Lead
 - **Role**: Responsible for overseeing the organization and maintenance of all project documentation. Sarah ensures that all documents are up to date, well-organized, and accessible to team members.
