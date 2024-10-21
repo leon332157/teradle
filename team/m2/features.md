@@ -1,43 +1,43 @@
 # Application Features
 
-## Expense Categorization
+## Quiz Creation and Customization
 
-This feature will automatically categorize expenses into predefined categories such as groceries, utilities, entertainment, and transportation. Users can view their spending by category in real time, allowing them to better understand where their money is going. This helps users make more informed decisions about their budget and spending habits by quickly identifying areas where they may be overspending.
+Users (hosts) can create custom quizzes by adding multiple types of questions, such as multiple choice, true/false, or short answer. Each question can include multimedia elements like images, videos, or audio to enhance the learning experience. Hosts can set time limits for each question to control the pacing of the quiz.
 
-**Assigned to**: Alice Johnson
+**Assigned to**: 
   
-## Visual Analytics Dashboard
+## Real-Time Game Sessions
 
-The visual analytics dashboard will provide users with real-time graphs and charts displaying their spending trends over time. Users can view monthly comparisons, track spending in specific categories, and gain insights into their financial habits. The dashboard will play a key role in helping users visualize their financial data and make data-driven decisions to improve their budgeting.
+Players can join live game sessions using a game PIN provided by the host. The quiz is presented in real-time, with questions being pushed to all participants at the same time. Players submit answers through their devices, and real-time feedback is provided for each question.
 
-**Assigned to**: Bob Smith
+**Assigned to**: 
 
-## Expense Logging with Multi-Device Access
+## Leaderboard and Scoring
 
-Users will be able to log expenses from both desktop and mobile devices. This feature will allow users to enter expenses on the go, with all data synced between devices. This ensures that users can keep track of their spending anytime, anywhere, making the application flexible and convenient for everyday use. 
+Players are scored based on both speed and accuracy, with faster correct answers earning higher points. After each question, a live leaderboard is displayed to all participants, showing their rank and progress compared to others. 
 
-**Assigned to**: Carol Davis
+**Assigned to**: 
 
-## Savings Goals Tracking
+## History and Review of Previous Quizzes
 
-Users will be able to set personalized savings goals and track their progress. The application will notify users when they are close to reaching a goal or when their spending habits may impact their ability to save. This feature encourages better financial habits by motivating users to stay on top of their savings targets and provides a sense of accomplishment when goals are met.
+Players can access their quiz history to review past performance. This includes a breakdown of the answers they provided, which questions they got right or wrong, and their overall scores. This feature helps users reflect on their progress and learning over time.
 
-**Assigned to**: David Lee
+**Assigned to**:
 
-## Transaction Search and Filter
+## Chat Functionality
 
-This feature will allow users to search and filter transactions based on date, category, or amount. This makes it easier for users to find specific transactions, review their spending, and adjust their budgets accordingly. The ability to quickly locate past expenses helps users stay organized and provides greater control over their financial data.
+Participants can engage with the host and other players through a real-time chat interface during the quiz. This enhances interaction, allowing users to discuss questions, clarify answers, and build engagement.
 
-**Assigned to**: Eve Martinez
+**Assigned to**:
 
-## CSV Data Import/Export
+## Multiplayer Mode
 
-Users will have the ability to import or export their financial data in CSV format. This feature will be useful for users who want to migrate their data from other budgeting tools or for those who wish to perform more detailed analyses outside the application. Exporting data in CSV format also provides users with a backup of their financial records for future reference.
+In multiplayer mode, participants can compete against each other in real-time. The game dynamically adjusts the difficulty level based on the number of players and their performance. This ensures a fun and competitive environment.
 
-**Assigned to**: Frank Walker
+**Assigned to**:
 
-## Notifications and Alerts
+## Game PIN System
 
-The notifications and alerts feature will notify users of significant financial events, such as exceeding budget limits, approaching savings goals, or receiving large payments. These alerts will be customizable, allowing users to set their preferences for receiving updates. This feature ensures that users stay informed and engaged with their finances, promoting proactive budgeting and savings behavior.
+To join a game, players simply enter a unique game PIN provided by the host. This makes it easy for players to participate in quizzes without needing to create accounts, making the platform more accessible for quick, casual play.
 
-**Assigned to**: Grace Harper
+**Assigned to**:
