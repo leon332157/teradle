@@ -35,7 +35,7 @@
   2. [Commit 2](https://github.com/repo/commit2): Coordinated communication between team members during the second milestone and relayed critical information about deadlines.
   3. [Commit 3](https://github.com/repo/commit3): Managed Slack updates by setting up automatic reminders for tasks and meetings.
 
-## Eungyu Shim - Quality Controll
+## Eungyu Shim - Quality Control
 - **Role**: Focuses on creating and refining the user interface design. Eungyu is responsible for developing the visual aspects of the project, ensuring an intuitive and engaging user experience.
 - **Top 3 Commits**:
   1. [Commit 1](https://github.com/repo/commit1): Created and finalized the UI Diagrams, including the **Question Screen**, **Feedback Screens**, and **End Game Screen** for the quiz game.
