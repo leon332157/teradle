@@ -4,82 +4,87 @@
 
 ### 1. User Profile
 
-- **Description**: Contains personal information about the user, including login details and preferences.
+- **Description**: Stores essential information about users, for both students and instructors.
 - **Attributes**:
   - `user_id` (string): A unique identifier for each user.
   - `name` (string): The user's full name.
   - `email` (string): The user's email address.
   - `password` (string): A hashed version of the user's password.
-  - `currency_preference` (string): The user's preferred currency (e.g., USD, EUR).
+  - `role` (string): Specifies whether the user is a student or an instructor. 
   - `created_at` (timestamp): The date and time when the account was 
     created.
   - `updated_at` (timestamp): The last time the user's profile was updated.
 - **Data Source**: User-input data when registering or updating their profile.
 
-### 2. Expense Entry
+### 2. Quiz
 
-- **Description**: Tracks individual expense transactions made by the user.
+- **Description**: Represents quizzes created by instructors.
 - **Attributes**:
-  - `expense_id` (string): A unique identifier for each expense entry.
-  - `user_id` (string): The unique identifier for the user associated with the expense.
-  - `amount` (float): The amount of money spent.
-  - `category` (string): The category of the expense (e.g., groceries, 
-    entertainment).
-  - `description` (string): A brief description of the transaction.
-  - `date` (date): The date the transaction occurred.
-  - `created_at` (timestamp): The date and time when the expense was logged.
-- **Data Source**: User-input data via the expense logging form.
+  - `quiz_id` (string): A unique identifier for the quiz.
+  - `title` (string): The title of the quiz.
+  - `description` (string): A brief description of the quiz.
+  - `instructor_id` (string): The `user_id` of the instructor who created the quiz.
+  - `created_at` (timestamp): The creation date and time of the quiz.
+  - `updated_at` (timestamp): The last modification date and time of the quiz.
+- **Data Source**: Instructor input through the quiz creation interface.
 
-### 3. Income Entry
+### 3. Question
 
-- **Description**: Records income received by the user, such as salary or freelance payments.
+- **Description**: Contains the questions for each quiz.
 - **Attributes**:
-  - `income_id` (string): A unique identifier for each income entry.
-  - `user_id` (string): The unique identifier for the user associated with the income.
-  - `amount` (float): The amount of income received.
-  - `source` (string): The source of the income (e.g., employer, side gig).
-  - `date` (date): The date the income was received.
-  - `created_at` (timestamp): The date and time when the income was logged.
-- **Data Source**: User-input data via the income logging form.
+  - `question_id` (string): A unique identifier for each question.
+  - `quiz_id` (string): The identifier of the quiz to which the questions belongs.
+  - `text` (string): The actual text of the question.
+  - `created_at` (timestamp): The date and time the question was created.
+  - `updated_at` (timestamp): The date the time the question was last updated.
+- **Data Source**: Instructor input during the quiz creation or updating process.
 
-### 4. Savings Goal
+### 4. Answer
 
-- **Description**: Stores information about a user’s savings goals, 
-  including the target amount and progress.
+- **Description**: Stores possible answers to each question, marking the correct one.
 - **Attributes**:
-  - `goal_id` (string): A unique identifier for each savings goal.
-  - `user_id` (string): The unique identifier for the user associated with the goal.
-  - `goal_name` (string): The name or title of the savings goal (e.g., 
-    "Vacation Fund").
-  - `target_amount` (float): The total amount the user aims to save.
-  - `current_amount` (float): The amount saved so far.
-  - `target_date` (date): The date by which the user aims to reach the 
-    savings goal.
-  - `created_at` (timestamp): The date and time when the goal was created.
-  - `updated_at` (timestamp): The last time the goal's progress was updated.
-- **Data Source**: User-input data via the savings goals form.
+  - `answer_id` (string): A unique identifier for each answer.
+  - `question_id` (string): The identifier of the question this answer relates to.
+  - `text` (string): The text of the answer.
+  - `is_correct` (boolean): Indicates whether this answer is the correct choice.
+  - `created_at` (timestamp): The date and time when the answer was created.
+  - `updated_at` (timestamp): The date and time when the answer was last updated.
+- **Data Source**: Instructor input through the quiz and question creation interface.
 
-### 5. Spending Trend
+### 5. Quiz Session
 
-- **Description**: Represents aggregated spending data, used for visualizing spending trends over time.
+- **Description**: Records instances where students take a quiz, tracking their answers and scores.
 - **Attributes**:
-  - `user_id` (string): The unique identifier for the user associated with the trend data.
-  - `month` (string): The month and year for which the trend data applies.
-  - `total_spending` (float): The total spending for the given month.
-  - `category_spending` (JSON): A breakdown of spending per category for the given month.
-- **Data Source**: System-generated based on user expenses logged over 
-  time.
+  - `session_id` (string): The unique identifier for each session.
+  - `quiz_id` (string): The identifier of the quiz being taken.
+  - `student_id` (string): The `user_id` of the student taking the quiz.
+  - `score` (int): The total score the student achieved in the quiz.
+  - `start_time` (timestamp): The start time of the quiz session.
+  - `end_time` (timestamp): The end time of the quiz session.
+- **Data Source**: System-generated as students participate in quizzes.
+
+### 6. Real-Time Interactions
+
+- **Description**: Records the interactions during a live quiz session, such as time taken to answer each question, which can be used for analytics and improving the interactive aspect of quizzes.
+- **Attributes**:
+  - `interaction_id` (string): The unique identifier for each interaction.
+  - `session_id` (string): The identifier of the session where the interaction occurred.
+  - `question_id` (string): The identifier of the question being answered.
+  - `student_id` (string): The `user_id` of the student involved in the interaction.
+  - `answer_id` (int): The identifier of the answer selected by the student.
+  - `response_time` (int): Time in seconds taken by the student to respond.
+- **Data Source**: System-generated as students answer questions in real-time.
 
 ## Data Relationships
 
-- **User to Expense Entry**: One-to-many relationship (a user can have many expense entries).
-- **User to Income Entry**: One-to-many relationship (a user can have many income entries).
-- **User to Savings Goal**: One-to-many relationship (a user can have many savings goals).
-- **Expense Entry to Spending Trend**: Expenses contribute to aggregated spending trend data, which is calculated monthly.
+- **User to Quiz**: One-to-many relationship (instructors can create multiple quizzes).
+- **Quiz to Question**: One-to-many relationship (each quiz contains multiple questions).
+- **Question to Answer**: One-to-many relationship (each question can have multiple answers).
+- **User to Quiz Session**: One-to-many relationship (students can participate in multiple quiz sessions).
+- **Quiz Session to Real-Time Interaction**: One-to-many relationship (a session can have multiple interactions, as each student's response to each question is recorded).
+- **User to Real-Time Interaction**: Many-to-one relationship (multiple interactions can be associated with a single student during various quiz sessions).
 
 ## Data Sources
 
-- **User-Input Data**: Most of the data, including user profiles, expenses, income, and savings goals, will come from direct user input via forms in the application.
-- **System-Generated Data**: Spending trends will be automatically 
-  calculated by the system based on the expenses logged by users over 
-  time.
+- **User-Input Data**: Captured directly from users when registering, updating profiles, creating quizzes, entering questions and answers, and during quiz participation.
+- **System-Generated Data**: Includes records from quiz sessions, scores, and detailed logs of real-time interactions during quizzes. This data is automatically captured as users interact with quizzes, providing real-time feedback.
