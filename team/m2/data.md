@@ -71,7 +71,7 @@
   - `session_id` (string): The identifier of the session where the interaction occurred.
   - `question_id` (string): The identifier of the question being answered.
   - `student_id` (string): The `user_id` of the student involved in the interaction.
-  - `answer_id` (int): The identifier of the answer selected by the student.
+  - `answer_id` (string): The identifier of the answer selected by the student.
   - `response_time` (int): Time in seconds taken by the student to respond.
 - **Data Source**: System-generated as students answer questions in real-time.
 
