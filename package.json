@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write src/**/*.ts",
-    "start": "build:gulp && serve",
+    "start": "npm run build && npm run serve",
+    "build": "npm run build:gulp",
     "build:tsc": "tsc",
     "build:gulp": "gulp",
     "serve": ""
