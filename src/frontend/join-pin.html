@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Join Quiz Game</title>
+    <style>
+        .join-game-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #02590F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #FFFFCC;
+        }
+    </style>
+</head>
+<body>
+    <div class="join-game-container">
+        <h1>Enter Game PIN</h1>
+        <form id="joinGameForm">
+            <input type="text" id="gamePin" placeholder="Game PIN" required>
+            <input type="text" id="playerName" placeholder="Your Name" required>
+            <button type="submit">Join Game</button>
+        </form>
+    </div>
+    <script src="join-pin.js"></script>
+</body>
+</html>
