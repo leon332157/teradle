@@ -19,13 +19,13 @@ function initPage() {
     const timer_elem = document.getElementById('timer');
     //const timeInit = localStorage.getItem('timeInit');
     let timeLeft = 30; // seconds
-    if (timer_elem) {
-        timer_elem.innerHTML = `Timer: ${timeLeft}s`;
+    if (timer_elem == null) {
+        console.error('Timer element not found');
     }
+    timer_elem!.innerHTML = `Timer: ${timeLeft}s`;
     setInterval(() => {
-        if (timer_elem) {
-            timer_elem.innerHTML = `Timer: ${--timeLeft}s`;
-        }
+            timer_elem!.innerHTML = `Timer: ${--timeLeft}s`;
+        
     }, 1000);
     if (timeLeft === 0) {
         timeUp();
