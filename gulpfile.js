@@ -1,8 +1,9 @@
-const { series,src,dest,parallel } = require('gulp');
+const { series, src, dest, parallel } = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');
 const typescript = require('gulp-typescript');
 const tsProject = typescript.createProject('tsconfig.json');
 const tsReporter = typescript.reporter.fullReporter();
+const browsersync = require('browser-sync').create();
 
 const config = {
     "sourceRootFrontend": "src/frontend/",
@@ -11,18 +12,18 @@ const config = {
     "htmlSource": "src/frontend/*.html",
 }
 
-function copyHtml () {
-    return src(config.htmlSource,{debug: true})
-        .pipe(dest(config.buildRoot,{debug: true}));
-    }
+function copyHtml() {
+    return src(config.htmlSource, { debug: true })
+        .pipe(dest(config.buildRoot, { debug: true }));
+}
 
-function copyAssets () {
+function copyAssets() {
     return src(config.sourceRootFrontend + "assets/**/*")
-        .pipe(dest(config.buildRoot+"assets/"));
-    }
+        .pipe(dest(config.buildRoot + "assets/"));
+}
 
-function compileTSFrontend () {
-    let tsResult = src(config.sourceRootFrontend+"**/*.ts")
+function compileTSFrontend() {
+    let tsResult = src(config.sourceRootFrontend + "**/*.ts")
         .pipe(sourcemaps.init())
         .pipe(tsProject(tsReporter));
 
@@ -41,6 +42,37 @@ function compileTSBackend() {
         .pipe(dest(config.buildRoot + "backend/"));
 }
 
-const frontend = series(copyHtml,copyAssets,compileTSFrontend);
+function watch() {
+    // Watch for changes in frontend
+    watch(config.sourceRootFrontend + "**/*.ts", compileTSFrontend);
+    watch(config.sourceRootFrontend + "**/*.html", copyHtml);
+    watch(config.sourceRootFrontend + "assets/**/*", copyAssets);
+    // Watch for changes in backend
+    watch(config.sourceRootBackend + "**/*.ts", compileTSBackend);
+    // Watch for changes in dist
+    watch(config.buildRoot + "**/*", browsersyncReload);
+}
+
+function browsersyncServe(cb) {
+    browsersync.init({
+        server: {
+            baseDir: 'dist'
+        }
+    });
+    cb();
+}
+
+function browsersyncReload(cb) {
+    browsersync.reload();
+    cb();
+}
+
+const watchAndServe = series(parallel(copyHtml, copyAssets), series(compileTSFrontend, compileTSBackend), browsersyncServe);
+
+exports.browsersyncServe = browsersyncServe;
+exports.watch = watch;
+exports.watchAndServe = watchAndServe;
+
+const frontend = series(copyHtml, copyAssets, compileTSFrontend);
 const backend = series(compileTSBackend);
 exports.default = series(frontend, backend);
