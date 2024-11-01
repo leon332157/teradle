@@ -1,9 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>teradle</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Session</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>teradle</h1>
+    <header id="pin-container">
+        <p>Welcome to Teradle!</p>
+        <div id="session-details">
+            <p>Game PIN:</p>
+            <p id="pin"></p> <!-- Game Pin -->
+        </div>
+    </header>
+
+     <main>
+        <div id="player-count">0 Players</div> <!-- Number of Players Joined -->
+        <div start="start-button">Start</div>
+        <div id="player-list">
+             <!-- Player names -->
+        </div>
+    </main>
+
+    <footer id="footer">
+        Waiting for players...
+    </footer>
+
+    <script src="index.ts"></script>
 </body>
 </html>
