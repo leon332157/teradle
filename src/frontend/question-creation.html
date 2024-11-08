@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Creation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 700;
+    }
+
+    .quiz-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="text"], input[type="number"], button {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px;
+    }
+
+    /* List styling for questions and answers */
+    .question-list, .answer-list {
+      list-style: none;
+      padding: 0;
+    }
+    .question-list li {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 700;
+    }
+    .question-item {
+      display: grid;
+      grid-template-columns: 1fr 2fr; /* Left for question, right for options and delete */
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      margin-bottom: 10px;
+      position: relative;
+  }
+  
+  /* Question header on the left */
+  .question-header {
+      grid-column: 1;
+  }
+  
+  /* Answer container on the right */
+  .answer-container {
+      grid-column: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Two columns for two options per row */
+      gap: 5px;
+  }
+  
+  /* Delete button styled smaller and positioned */
+  .delete-button {
+      padding: 5px 10px;
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      width: auto;
+      justify-self: end; /* Aligns button to the right */
+      margin-top: 10px;
+  }
+    /* Pop-up styling */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+    .popup.active {
+      display: block;
+    }
+
+    /* Overlay for popup */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 5;
+    }
+    .overlay.active {
+      display: block;
+    }
+
+    /* Radio buttons styling */
+    .question-type {
+      display: flex;
+      gap: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <h1>Quiz Creator</h1>
+
+  <label for="quiz-name">Quiz Name:</label>
+  <input type="text" id="quiz-name" placeholder="Enter quiz name here">
+
+  <!-- Question List -->
+  <h2>Questions</h2>
+  <ul class="question-list" id="question-list">
+  </ul>
+
+  <!-- Add Question Button -->
+  <button id="add-question">Add Question</button>
+
+  <!-- Popup for Adding Questions -->
+  <div class="overlay" id="overlay"></div>
+  <div class="popup" id="question-popup">
+    <h2>Add New Question</h2>
+
+    <!-- Question Type Selection -->
+    <div class="question-type">
+      <label>
+        <input type="radio" name="question-type" value="true-false" onchange="editAnswerOptions()"> True/False
+      </label>
+      <label>
+        <input type="radio" name="question-type" value="multiple-choice" onchange="editAnswerOptions()"> Multiple Choice
+      </label>
+    </div>
+
+    <!-- Time Limit Input -->
+    <label for="time-limit">Time Limit (10-60 seconds):</label>
+    <input type="number" id="time-limit" min="10" max="60" placeholder="Set time limit">
+
+    <!-- Answer Options List -->
+    <h3>Answers</h3>
+    <ul class="answer-list" id="answer-list">
+      <!-- Answer options will populate here based on question type -->
+    </ul>
+
+    <button id="save-question">Save Question</button>
+  </div>
+</div>
+
+<script>
+    // Toggle the add question popup
+    const addQuestionButton = document.getElementById('add-question');
+    const questionPopup = document.getElementById('question-popup');
+    const overlay = document.getElementById('overlay');
+    const questionList = document.getElementById('question-list');
+    const saveQuestionButton = document.getElementById('save-question');
+  
+    let questionNumber = 1; // Track question number
+  
+    addQuestionButton.addEventListener('click', () => {
+      questionPopup.classList.add('active');
+      overlay.classList.add('active');
+    });
+  
+    overlay.addEventListener('click', () => {
+      closePopup();
+    });
+  
+    saveQuestionButton.addEventListener('click', () => {
+      saveQuestion();
+      closePopup();
+    });
+  
+    // Close the popup and overlay
+    function closePopup() {
+      questionPopup.classList.remove('active');
+      overlay.classList.remove('active');
+    }
+  
+    function editAnswerOptions() {
+      const answerList = document.getElementById('answer-list');
+      answerList.innerHTML = '';
+      const questionType = document.querySelector('input[name="question-type"]:checked').value;
+      
+      if (questionType === 'true-false') {
+        const trueAnswer = document.createElement('li');
+        const falseAnswer = document.createElement('li');
+
+        trueAnswer.innerHTML = `<input type="text" value="True">`;
+        falseAnswer.innerHTML = `<input type="text" value="False">`;
+        
+        answerList.appendChild(trueAnswer);
+        answerList.appendChild(falseAnswer);
+      } else if (questionType === 'multiple-choice') {
+        for (let i = 0; i < 4; i++) {
+          const answer = document.createElement('li');
+          answer.innerHTML = `<input type="text" value="Option ${i + 1}">`;
+          answerList.appendChild(answer);
+        }
+      }
+    }
+  
+
+    // Updated Question List Item Template in saveQuestion function
+    function saveQuestion() {
+      const questionName = document.querySelector('input[name="question-type"]:checked').value === 'true-false' ? 'True/False' : 'Multiple Choice';
+      const timeLimit = document.getElementById('time-limit').value;
+      
+      if (!timeLimit || timeLimit < 10 || timeLimit > 60) {
+          alert('Please enter a valid time limit between 10 and 60 seconds.');
+          return;
+      }
+  
+      // Get answer inputs
+      const answers = [];
+      document.querySelectorAll('#answer-list input[type="text"]').forEach(input => {
+          answers.push(input.value);
+      });
+  
+      const questionItem = document.createElement('li');
+      questionItem.classList.add('question-item');
+  
+      const questionHeader = document.createElement('div');
+      questionHeader.classList.add('question-header');
+      questionHeader.innerHTML = `
+          <p><strong>${questionNumber}. ${questionName} Question</strong></p>
+          <p><em>Time Limit: ${timeLimit}s</em></p>
+      `;
+  
+      const answerContainer = document.createElement('div');
+      answerContainer.classList.add('answer-container');
+      answers.forEach((answerText, index) => {
+          const answerElement = document.createElement('p');
+          answerElement.classList.add('answer-item');
+          answerElement.textContent = `${answerText}`;
+          answerContainer.appendChild(answerElement);
+      });
+  
+      const deleteButton = document.createElement('button');
+      deleteButton.classList.add('delete-button');
+      deleteButton.textContent = 'Delete';
+      deleteButton.onclick = () => questionItem.remove();
+  
+      questionItem.appendChild(questionHeader);
+      questionItem.appendChild(answerContainer);
+      questionItem.appendChild(deleteButton); // Positioned automatically at the bottom right
+      questionList.appendChild(questionItem);
+  
+      questionNumber++; // Increment question number
+  }
+</script>  
+</body>
+</html>
