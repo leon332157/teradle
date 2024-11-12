@@ -27,6 +27,17 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
+    .error-message {
+    color: #dc3545;
+    font-size: 0.8em; 
+    margin-top: 4px; 
+    height: 1em; 
+    visibility: hidden; 
+    }
+    .error-message.visible {
+      visibility: visible;
+    }
+    
     input[type="text"], input[type="number"], button {
       width: 100%;
       padding: 8px;
@@ -169,8 +180,9 @@
     </div>
 
     <!-- Time Limit Input -->
-    <label for="time-limit">Time Limit (10-60 seconds):</label>
+    <label for="time-limit">Time Limit:</label>
     <input type="number" id="time-limit" min="10" max="60" placeholder="Set time limit">
+    <div class="error-message" id="time-limit-error"></div>
 
     <!-- Answer Options List -->
     <h3>Answers</h3>
@@ -182,6 +194,6 @@
   </div>
 </div>
 
-<script src = "question-creation.ts"></script>  
+<script src="question-creation.js"></script>  
 </body>
 </html>
