@@ -1,0 +1,79 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffc5d3;
+    color: #ffffff;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* PIN Container */
+#pin-container {
+    background-color: #ffffff;
+    color: #333;
+    padding: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#pin-container p {
+    margin: 0;
+}
+
+#pin {
+    font-size: 2.5em;
+}
+
+/* Player Count */
+#player-count {
+    font-size: 1.5em;
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* Start Button */
+#start-button {
+    font-size: 1.5em;
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: right;
+}
+
+/* Player List */
+#player-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.player {
+    background-color: #ffc5d3;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 15px;
+    font-size: 1.5em;
+    width: 150px;
+    color: white;
+}
+
+/* Footer */
+#footer {
+    background-color: #99606e;
+    color: #ffffff;
+    padding: 15px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    font-size: 1em;
+}
