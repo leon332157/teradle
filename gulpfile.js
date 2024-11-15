@@ -17,6 +17,16 @@ function copyHtml() {
         .pipe(dest(config.buildRoot, { debug: true }));
 }
 
+function copyCSS() {
+    return src(config.sourceRootFrontend + "**/*.css")
+        .pipe(dest(config.buildRoot ));
+}
+
+function copyJS() {
+    return src(config.sourceRootFrontend + "**/*.js")
+        .pipe(dest(config.buildRoot ));
+}
+
 function copyAssets() {
     return src(config.sourceRootFrontend + "assets/**/*")
         .pipe(dest(config.buildRoot + "assets/"));
@@ -72,7 +82,6 @@ const watchAndServe = series(parallel(copyHtml, copyAssets), series(compileTSFro
 exports.browsersyncServe = browsersyncServe;
 exports.watch = watch;
 exports.watchAndServe = watchAndServe;
-
-const frontend = series(copyHtml, copyAssets, compileTSFrontend);
+const frontend = series(copyHtml, copyAssets,copyCSS,copyJS, compileTSFrontend);
 const backend = series(compileTSBackend);
 exports.default = series(frontend, backend);
