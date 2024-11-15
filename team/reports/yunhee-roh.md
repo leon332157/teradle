@@ -12,3 +12,8 @@
 - **Task**: Developed the join-pin page.
 - **Details**: Created HTML and CSS for the page to facilitate game entry via a PIN.
 - **Link to Commit**: [Commit](https://github.com/leon332157/teradle/compare/main...yunhee-join-pin)
+
+### November 15, 2024
+- **Task**: Implemented interactive functionality for the join-pin page.
+- **Details**: Developed a TypeScript file (`join-pin.ts`) that adds dynamic behavior to the join-pin page.
+- **Link to Commit**: [Commit](https://github.com/leon332157/teradle/pull/8)
