@@ -36,6 +36,7 @@ Players can join live game sessions using a game PIN provided by the host. The q
 - Add list of answers on instructors page,for student button only, based on shape and color 3pts
   - when answer selected, trigger JS code to store the answer
   - after timer expires, show correct answer, answer distribution; show correctness on student's page 3pts 
+
 **Assigned to**: Leon
 
 ## Leaderboard and Scoring
@@ -44,6 +45,7 @@ Players are scored based on both speed and accuracy, with faster correct answers
 - Fetch leaderboard from backend name, score
   - sort descending based on score, display bar on screen 2pts
   - for instructors version, next question button
+
 **Assigned to**: Selena
 
 ## History and Review of Previous Quizzes
@@ -71,5 +73,5 @@ To join a game, players simply enter a unique game PIN provided by the host. Thi
 - Join button <button> make API request to join the sesssion
   - alert error if code wrong, any other stuff
   - alert success, swap page to "You have joined <quizname>"
-**Assigned to**: Yunhee
 
+**Assigned to**: Yunhee
