@@ -1,5 +1,3 @@
-// question-creation.js
-
 const addQuestionButton = document.getElementById('add-question');
 const questionPopup = document.getElementById('question-popup');
 const overlay = document.getElementById('overlay');
