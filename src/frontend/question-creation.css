@@ -1,0 +1,140 @@
+/* General styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 700;
+}
+
+.quiz-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.8em;
+  margin-top: 4px;
+  height: 1em;
+  visibility: hidden;
+}
+
+.error-message.visible {
+  visibility: visible;
+}
+
+.spacer {
+  height: 20px;
+}
+
+input[type="text"], input[type="number"], button {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px;
+}
+
+/* Disabled Save Question button styling */
+#save-question:disabled {
+  background-color: gray;
+  color: lightgray;
+  cursor: not-allowed;
+}
+
+/* Popup styling */
+.popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.popup.active {
+  display: block;
+}
+
+/* Close button styling */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  line-height: 1;
+  text-align: center;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.close-button:hover {
+  color: #dc3545;
+}
+
+/* Overlay styling */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.overlay.active {
+  display: block;
+}
+
+/* Question type radio buttons styling */
+.question-type {
+  display: flex;
+  gap: 10px;
+}
+
+/* Remove bullets from answer list */
+.answer-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+  
+.answer-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row; /* Arrange radio button and text input horizontally */
+}
+  
