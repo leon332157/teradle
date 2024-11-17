@@ -82,11 +82,6 @@ const watchAndServe = series(parallel(copyHtml, copyAssets), series(compileTSFro
 exports.browsersyncServe = browsersyncServe;
 exports.watch = watch;
 exports.watchAndServe = watchAndServe;
-<<<<<<< HEAD
 const frontend = series(copyHtml, copyAssets,copyCSS,copyJS, compileTSFrontend);
-=======
-
-const frontend = series(copyHtml, copyAssets, compileTSFrontend);
->>>>>>> leon-ingame-page
 const backend = series(compileTSBackend);
 exports.default = series(frontend, backend);
