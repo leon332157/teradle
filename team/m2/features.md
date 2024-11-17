@@ -3,7 +3,7 @@
 ## Quiz Creation and Customization
 Users can create custom quizzes by adding multiple types of questions, such as multiple choice, true/false. Each question can include multimedia elements like images, videos, or audio to enhance the learning experience. Hosts can set time limits for each question to control the pacing of the quiz.
 - Quiz name: `<input>` (1pt)
-- Questions List (2pts)
+- Questions List: (2pts)
   - Individual question: `<li><p id="number"></p><p id="name"></p><button id="delete-question"></button></li>`
 - Add Question Pop-Up (Multiview): `<button>` (4pts)
   - Question Type: `<input type="radio">` (true/false, multiple choice; onchange event edits HTML for number of answers)
