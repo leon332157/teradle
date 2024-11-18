@@ -7,6 +7,7 @@ The `Display Quiz Session Details` feature dynamically adds HTML elements to sho
 This feature is part of the "Running and Starting Quiz" feature, which I collaborated with Eric Sun. 
 I individually developed the sub-features: "Display Quiz Session Details" and  "Start Button".
 
+```mermaid
 sequenceDiagram
     participant User
     participant Frontend
