@@ -1,10 +1,8 @@
-## Feature Sequence Diagram
-
-**Feature Description:**
+## Feature Description
 The `Leaderboard and Scoring` feature dynamically updates the leaderboard based on players' scores. The feature fetches scores from the server, sorts them in descending order by score, and displays the results on the frontend. The instructor version includes a "Next" button to proceed to the next question.
 
-**Team Collaboration:**
-This feature was implemented individually by me (Selena). No collaboration was involved.
+## Team Collaboration
+This feature was implemented individually by Selena. No collaboration was involved.
 
 ```mermaid
 sequenceDiagram

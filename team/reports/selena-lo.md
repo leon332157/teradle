@@ -18,4 +18,4 @@
 
 ### November 17, 2024
 - Added feature sequence diagram for the leaderboard and scoring page.
-- **Link to Commit**: [Commit](https://github.com/leon332157/teradle/commit/fd8e003b4d5182b1827e72fd4f9520c683bc5efc)
+- **Link to Commit**: [Commit](https://github.com/leon332157/teradle/commit/fb8f062853a0002ded3d05b24d803db7309009b6)

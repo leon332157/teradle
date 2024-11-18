@@ -17,3 +17,7 @@
 - **Task**: Implemented interactive functionality for the join-pin page.
 - **Details**: Developed a TypeScript file (`join-pin.ts`) that adds dynamic behavior to the join-pin page.
 - **Link to Commit**: [Commit](https://github.com/leon332157/teradle/pull/8)
+
+### November 17, 2024
+- **Task**: Feature-sequence-diagram updated
+- **Details**: Created Feature-sequence-diagram for the feature 'join-pin system'.
