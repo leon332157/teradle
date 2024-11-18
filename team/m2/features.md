@@ -6,11 +6,11 @@ Users can create custom quizzes by adding multiple types of questions, such as m
 - Questions List: (2pts)
   - Individual question: `<li><p id="number"></p><p id="name"></p><button id="delete-question"></button></li>`
 - Add Question Pop-Up (Multiview): `<button>` (4pts)
+  - Question Text: `<input type="text">`
   - Question Type: `<input type="radio">` (true/false, multiple choice; onchange event edits HTML for number of answers)
   - Time Limit: `<input>` (max: 60 seconds, min: 10 seconds)
   - Answers:
-    - Correct answer is always the first item in the list.
-    - Single answer with color: `<li onclick="checkAnswer(true/false)"><div id="answer"></div></li>`
+    - Correct answer is identified by a radio button.
 
 **Assigned to**: Sid, Ethan
 
