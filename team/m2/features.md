@@ -24,7 +24,7 @@ Hosts can manage and start quizzes, create unique sessions, and display relevant
   - Name of quiz
   - PIN (session ID); for demo: generate a random number; in production: call the server
   - Number of people joined
-  - Start button to redirect to the questions path
+  - Start button to redirect to the questions path (1pt)
 
 **Assigned to**: Eric, Phoebe
 
