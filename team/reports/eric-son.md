@@ -15,4 +15,6 @@
  ## November 8, 2024
  - Team check-in and further discuss project direction
  - Worked on list of quiz page and developed demo for pin and players joining
- 
+
+## November 17, 2024
+- Updated feature-sequence-diagram
