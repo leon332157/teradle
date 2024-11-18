@@ -1,4 +1,4 @@
-const { series, src, dest, parallel } = require('gulp');
+const { series, src, dest, parallel,watch } = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');
 const typescript = require('gulp-typescript');
 const tsProject = typescript.createProject('tsconfig.json');
@@ -52,11 +52,13 @@ function compileTSBackend() {
         .pipe(dest(config.buildRoot + "backend/"));
 }
 
-function watch() {
+function watchAndBuild() {
     // Watch for changes in frontend
     watch(config.sourceRootFrontend + "**/*.ts", compileTSFrontend);
     watch(config.sourceRootFrontend + "**/*.html", copyHtml);
     watch(config.sourceRootFrontend + "assets/**/*", copyAssets);
+    watch(config.sourceRootFrontend + "**/*.css", copyCSS);
+    watch(config.sourceRootFrontend + "**/*.js", copyJS);
     // Watch for changes in backend
     watch(config.sourceRootBackend + "**/*.ts", compileTSBackend);
     // Watch for changes in dist
@@ -77,10 +79,9 @@ function browsersyncReload(cb) {
     cb();
 }
 
-const watchAndServe = series(parallel(copyHtml, copyAssets), series(compileTSFrontend, compileTSBackend), browsersyncServe);
+const watchAndServe = parallel(parallel(copyHtml, copyAssets), series(compileTSFrontend, compileTSBackend),watchAndBuild, browsersyncServe);
 
 exports.browsersyncServe = browsersyncServe;
-exports.watch = watch;
 exports.watchAndServe = watchAndServe;
 const frontend = series(copyHtml, copyAssets,copyCSS,copyJS, compileTSFrontend);
 const backend = series(compileTSBackend);
