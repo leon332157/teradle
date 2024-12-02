@@ -1,9 +1,10 @@
-const { series, src, dest, parallel,watch } = require('gulp');
-var sourcemaps = require('gulp-sourcemaps');
+const { series, src, dest, parallel, watch } = require('gulp');
+const sourcemaps = require('gulp-sourcemaps');
 const typescript = require('gulp-typescript');
 const tsProject = typescript.createProject('tsconfig.json');
 const tsReporter = typescript.reporter.fullReporter();
 const browsersync = require('browser-sync').create();
+const { spawn } = require('child_process');
 
 const config = {
     "sourceRootFrontend": "src/frontend/",
@@ -12,6 +13,8 @@ const config = {
     "htmlSource": "src/frontend/*.html",
 }
 
+let backendProcess = null;
+
 function copyHtml() {
     return src(config.htmlSource, { debug: true })
         .pipe(dest(config.buildRoot, { debug: true }));
@@ -19,12 +22,12 @@ function copyHtml() {
 
 function copyCSS() {
     return src(config.sourceRootFrontend + "**/*.css")
-        .pipe(dest(config.buildRoot ));
+        .pipe(dest(config.buildRoot));
 }
 
 function copyJS() {
     return src(config.sourceRootFrontend + "**/*.js")
-        .pipe(dest(config.buildRoot ));
+        .pipe(dest(config.buildRoot));
 }
 
 function copyAssets() {
@@ -61,8 +64,6 @@ function watchAndBuild() {
     watch(config.sourceRootFrontend + "**/*.js", copyJS);
     // Watch for changes in backend
     watch(config.sourceRootBackend + "**/*.ts", compileTSBackend);
-    // Watch for changes in dist
-    watch(config.buildRoot + "**/*", browsersyncReload);
 }
 
 function browsersyncServe(cb) {
@@ -71,6 +72,7 @@ function browsersyncServe(cb) {
             baseDir: 'dist'
         }
     });
+    watch(config.buildRoot + "**/*", browsersyncReload);
     cb();
 }
 
@@ -79,10 +81,28 @@ function browsersyncReload(cb) {
     cb();
 }
 
-const watchAndServe = parallel(parallel(copyHtml, copyAssets), series(compileTSFrontend, compileTSBackend),watchAndBuild, browsersyncServe);
+function runBackend() {
+    watch(config.buildRoot + "backend/**/*", restartBackend);
+    restartBackend(() => { });
+}
 
-exports.browsersyncServe = browsersyncServe;
+function restartBackend(cb) {
+    if (backendProcess) {
+        backendProcess.kill();
+        backendProcess = null;
+        console.log('Backend process killed');
+    }
+    backendProcess = spawn('node', ['dist/backend/index.js'], { stdio: 'inherit' });
+    backendProcess.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
+    cb();
+}
+
+const watchAndServe = parallel(parallel(copyHtml, copyAssets, copyCSS, copyJS), series(compileTSFrontend, compileTSBackend), watchAndBuild, browsersyncServe);
+const watchAndRunBackend = parallel(parallel(copyHtml, copyAssets, copyCSS, copyJS), series(compileTSFrontend, compileTSBackend, runBackend), watchAndBuild);
 exports.watchAndServe = watchAndServe;
-const frontend = series(copyHtml, copyAssets,copyCSS,copyJS, compileTSFrontend);
+exports.watchAndRunBackend = watchAndRunBackend;
+const frontend = series(copyHtml, copyAssets, copyCSS, copyJS, compileTSFrontend);
 const backend = series(compileTSBackend);
-exports.default = series(frontend, backend);
+exports.default = parallel(frontend, backend);
