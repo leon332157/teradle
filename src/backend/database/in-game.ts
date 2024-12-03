@@ -1,3 +1,5 @@
+import { Question } from './quiz';
+
 type Participant = {
     id:number;
     name:string;
