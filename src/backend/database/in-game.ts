@@ -1,12 +1,12 @@
 import { Question } from './quiz';
 
-type Participant = {
+export type Participant = {
     id:number;
     name:string;
     score:number;
 }
 
-type Game = {
+export type Game = {
     sessionId:number; // the unique session id
     participants:Participant[]; // list of participants
     questions:Question[]; // list of questions loaded from quiz database

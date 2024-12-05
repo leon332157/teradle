@@ -9,7 +9,7 @@ export type Question = {
     answer: number; // index of the correct answer
 }
 
-type Quiz = {
+export type Quiz = {
     id: number;
     name: string;
     description: string;
