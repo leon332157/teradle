@@ -11,7 +11,6 @@ type Game = {
     participants:Participant[]; // list of participants
     questions:Question[]; // list of questions loaded from quiz database
     currentQuestion:number; // index of the current question
-
 }
 
 export class GameDatabase {

@@ -16,7 +16,7 @@ type Quiz = {
     questions: Question[];
 }
 
-class QuizDatabase {
+export class QuizDatabase {
     #quizList: Quiz[] = [];
     #jsonPath = join(__dirname,'..','..','..','quiz.json');
     
