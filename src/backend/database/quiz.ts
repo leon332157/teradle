@@ -9,14 +9,14 @@ export type Question = {
     answer: number; // index of the correct answer
 }
 
-type Quiz = {
+export type Quiz = {
     id: number;
     name: string;
     description: string;
     questions: Question[];
 }
 
-class QuizDatabase {
+export class QuizDatabase {
     #quizList: Quiz[] = [];
     #jsonPath = join(__dirname,'..','..','..','quiz.json');
     
