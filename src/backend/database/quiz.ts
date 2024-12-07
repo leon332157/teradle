@@ -10,10 +10,10 @@ export type Question = {
 }
 
 export type Quiz = {
-    id: number;
-    name: string;
-    description: string;
-    questions: Question[];
+    id: number; // unique id of the quiz
+    name: string; // name of the quiz 
+    description: string; 
+    questions: Question[]; // list of questions
 }
 
 export class QuizDatabase {
@@ -55,6 +55,9 @@ export class QuizDatabase {
     }
 
     createQuiz(quiz: Quiz): boolean {
+        if (quiz.id === undefined) {
+            return false;
+        }
         this.#quizList.push(quiz);
         return this.flush()
     }
