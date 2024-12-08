@@ -9,6 +9,17 @@ const timeLimitError = document.getElementById('time-limit-error');
 const answerList = document.getElementById('answer-list');
 const questionTextInput = document.getElementById('question-text');
 
+const quizData = {
+  name: '',
+  questions: []
+};
+
+// Get quiz name input
+const quizNameInput = document.getElementById('quiz-name');
+quizNameInput.addEventListener('input', () => {
+  quizData.name = quizNameInput.value.trim();
+});
+
 // Show popup for adding a question
 addQuestionButton.addEventListener('click', () => {
   questionPopup.classList.add('active');
@@ -133,6 +144,15 @@ function saveQuestion() {
     if (isCorrect) correctAnswer = answerText;
   });
 
+  const questionData = {
+    text: questionText,
+    type: questionType,
+    timeLimit: timeLimit,
+    answers: answers,
+    correctAnswer: correctAnswer
+  };
+  quizData.questions.push(questionData);
+
   // Create a question item for the list
   const questionItem = document.createElement('li');
   questionItem.classList.add('question-item');
@@ -164,12 +184,25 @@ function saveQuestion() {
   clearForm();
 }
 
+// Function to get quiz data as JSON string
+function getQuizJSON() {
+  return JSON.stringify(quizData);
+}
+
+// Add event listener for the Save Quiz button
+document.getElementById('save-quiz').addEventListener('click', () => {
+  const quizJSON = getQuizJSON();
+  console.log('Quiz JSON:', quizJSON);
+  // You can send quizJSON to your server here
+});
+
 // Function to renumber questions
 function renumberQuestions() {
   const questionItems = document.querySelectorAll('.question-item');
   questionItems.forEach((item, index) => {
     const questionNumberElement = item.querySelector('.question-header p strong');
-    questionNumberElement.textContent = `${index + 1}. ${item.querySelector('.question-header').textContent.includes('True/False') ? 'True/False' : 'Multiple Choice'} Question`;
+    const questionTypeText = item.querySelector('.question-header').textContent.includes('True/False') ? 'True/False' : 'Multiple Choice';
+    questionNumberElement.textContent = `${index + 1}. ${questionTypeText} Question`;
   });
 }
 
