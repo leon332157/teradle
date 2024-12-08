@@ -112,14 +112,16 @@ function editAnswerOptions() {
 // Function to save question
 saveQuestionButton.addEventListener('click', saveQuestion); // Ensure button click triggers save
 
+// Global variable to track editing state
+let editingItem = null;
+
 function saveQuestion() {
-  console.log('Attempting to save question...'); // Debug log
   const questionText = questionTextInput.value.trim();
   const questionType = document.querySelector('input[name="question-type"]:checked')?.value;
   const timeLimit = parseInt(timeLimitInput.value);
 
   if (!questionText || !questionType || isNaN(timeLimit)) {
-    console.error('Missing required fields'); // Log error if fields are missing
+    console.error('Missing required fields');
     return;
   }
 
@@ -133,36 +135,65 @@ function saveQuestion() {
     if (isCorrect) correctAnswer = answerText;
   });
 
-  // Create a question item for the list
-  const questionItem = document.createElement('li');
-  questionItem.classList.add('question-item');
+  // Use the question template
+  const template = document.getElementById('question-template');
+  const questionItem = template.content.cloneNode(true);
 
-  questionItem.innerHTML = `
-    <div class="question-header">
-      <p><strong></strong></p> <!-- Placeholder for dynamic numbering -->
-      <p><em>Time Limit: ${timeLimit}s</em></p>
-      <p>${questionText}</p>
-    </div>
-    <div class="answer-container">
-      ${answers.map(answer => `<p class="answer-item">${answer} ${answer === correctAnswer ? '(Correct)' : ''}</p>`).join('')}
-    </div>
-  `;
-  
-  const deleteButton = document.createElement('button');
-  deleteButton.classList.add('delete-button');
-  deleteButton.textContent = 'Delete';
-  deleteButton.onclick = () => {
-    questionItem.remove();
-    renumberQuestions(); // Renumber questions after deletion
+  // Fill the template with question data
+  questionItem.querySelector('.question-title').textContent = `${questionText}`;
+  questionItem.querySelector('.time-limit').textContent = `Time Limit: ${timeLimit}s`;
+
+  const answerContainer = questionItem.querySelector('.answer-container');
+  answers.forEach((answer) => {
+    const answerElement = document.createElement('p');
+    answerElement.classList.add('answer-item');
+    answerElement.textContent = `${answer}${answer === correctAnswer ? ' (Correct)' : ''}`;
+    answerContainer.appendChild(answerElement);
+  });
+
+  // Add event listeners for edit and delete buttons
+  const editButton = questionItem.querySelector('.edit-button');
+  const deleteButton = questionItem.querySelector('.delete-button');
+
+  editButton.onclick = () => {
+    // Set editing state
+    editingItem = editButton.closest('.question-item');
+    questionPopup.classList.add('active');
+    overlay.classList.add('active');
+
+    // Populate form with current question data
+    timeLimitInput.value = timeLimit;
+    questionTextInput.value = questionText;
+    document.querySelector(`input[value="${questionType}"]`).checked = true;
+    editAnswerOptions();
+    answerList.querySelectorAll('li').forEach((li, index) => {
+      li.querySelector('input[type="text"]').value = answers[index];
+      li.querySelector('input[type="radio"]').checked = answers[index] === correctAnswer;
+    });
+    validateInputs();
   };
 
-  questionItem.appendChild(deleteButton);
-  questionList.appendChild(questionItem);
+  deleteButton.onclick = () => {
+    const itemToDelete = deleteButton.closest('.question-item');
+    itemToDelete.remove();
+    renumberQuestions();
+  };
 
-  console.log('Question saved successfully.'); // Confirm save success
-  renumberQuestions(); // Renumber questions after adding a new one
+  // Append or replace the question item
+  if (editingItem) {
+    questionList.replaceChild(questionItem, editingItem);
+    editingItem = null; // Clear editing state
+  } else {
+    questionList.appendChild(questionItem);
+  }
+
+  closePopup();
+  // Renumber questions and clear the form
+  renumberQuestions();
   clearForm();
 }
+
+
 
 // Function to renumber questions
 function renumberQuestions() {
