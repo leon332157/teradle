@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         const pin = document.getElementById('gamePin').value;
-        fetch('/api/join', {
+        fetch(`/api/join?pin=${pin}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ pin })
@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(data.error);
             } else {
                 alert('Successfully joined the quiz!');
-                window.location.href = `/in-game/${pin}/1`;
+                document.body.innerHTML = 'You have joined.';
+                checkIfStarted(pin);
             }
         })
         .catch(error => {
@@ -23,3 +24,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+function checkIfStarted(pin) {
+    setInterval(() => {
+        fetch(`/api/session/${pin}/started`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.started) {
+                    window.location.href = `/in-game/${pin}/1`;
+                }
+            })
+            .catch(error => {
+                console.error('Error checking session status:', error);
+            });
+    }, 5000);
+}
