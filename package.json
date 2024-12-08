@@ -5,7 +5,7 @@
   "source": "src/frontend/index.html",
   "scripts": {
     "format": "prettier --write src/**/*.ts",
-    "start": "npx gulp watchAndServe",
+    "start": "npx gulp watchAndRunBackend",
     "build": "npm run build:gulp",
     "build:tsc": "tsc",
     "build:gulp": "gulp",
