@@ -14,7 +14,6 @@ export type Game = {
     currentQuestion: number; // index of the current question
 }
 
-const quizDatabase = getQuizDatabase();
 /*
     * This class is responsible for managing the game state.
     * It keeps track of the active sessions and their state.
@@ -28,6 +27,7 @@ export class GameController {
     * @returns Game - the created game object or Error if the quiz is not found
     */
     createSession(Quizid: number): Game | Error {
+        const quizDatabase = getQuizDatabase();
         const quizObj = quizDatabase.getQuiz(Quizid);
         if (!quizObj) {
             return Error("Quiz not found");
