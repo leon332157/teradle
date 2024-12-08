@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "express": "^5.0",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7"
   }
 }
