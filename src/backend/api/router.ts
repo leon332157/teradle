@@ -1,7 +1,8 @@
 import express from "express";
 
-import {getTest} from "./test";
-import {getSingleQuiz} from "./quiz";
+import { getTest } from "./test";
+import { getSingleQuiz, createQuiz } from "./quiz";
+import { getSession, createSession, addParticipant, nextQuestion } from "./in-game";
 
 export class ApiRouter {
   private router: express.Router;
@@ -12,8 +13,16 @@ export class ApiRouter {
   }
 
   private initRoutes() {
+    // quiz routes
     this.router.get('/api/test', getTest);
     this.router.get('/api/quiz/single', getSingleQuiz);
+    this.router.post('/api/quiz/create', createQuiz);
+
+    // game routes
+    this.router.get('/api/session', getSession)
+    this.router.get('/api/createSession', createSession)
+    this.router.get('/api/addParticipant', addParticipant)
+    this.router.post('/api/nextQuestion', nextQuestion)
   }
 
   public getRouter() {
