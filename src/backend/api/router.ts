@@ -1,7 +1,8 @@
 import express from "express";
 
-import {getTest} from "./test";
-import {getSingleQuiz} from "./quiz";
+import { getTest } from "./test";
+import { getSingleQuiz } from "./quiz";
+import { getLeaderboard } from "./leaderboard-scoring";
 
 export class ApiRouter {
   private router: express.Router;
@@ -14,6 +15,7 @@ export class ApiRouter {
   private initRoutes() {
     this.router.get('/api/test', getTest);
     this.router.get('/api/quiz/single', getSingleQuiz);
+    this.router.get('/api/leaderboard-scoring', getLeaderboard);
   }
 
   public getRouter() {
