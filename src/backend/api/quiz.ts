@@ -19,14 +19,15 @@ export function getSingleQuiz(req: Request, res: Response) {
     * This function creates a quiz from the request body
     * It expects a quiz object in the request body
 */
-export function createQuiz(req: Request, res: Response) {
+export async function createQuiz(req: Request, res: Response) {
   const quizDatabase = getQuizDatabase();
   const quiz = req.body; // json
+  console.log(quiz);
   if (!quiz) {
     res.status(400).send({ message: 'Invalid quiz' });
     return;
   }
-  if (quizDatabase.createQuiz(quiz)) {
+  if (await quizDatabase.createQuiz(quiz)) {
     res.json({ message: 'Quiz created' });
   } else {
     res.status(401).send({ message: 'Error occurred' });
