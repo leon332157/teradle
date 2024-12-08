@@ -5,6 +5,9 @@ import { ApiRouter } from './api/router';
 const app = express();
 const port = 8000;
 
+// add json body parser
+app.use(express.json());
+
 /* router for the API */
 const apiRouter = new ApiRouter();
 app.use(apiRouter.getRouter());
