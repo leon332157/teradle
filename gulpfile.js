@@ -57,13 +57,14 @@ function compileTSBackend() {
 
 function watchAndBuild() {
     // Watch for changes in frontend
-    watch(config.sourceRootFrontend + "**/*.ts", compileTSFrontend);
-    watch(config.sourceRootFrontend + "**/*.html", copyHtml);
-    watch(config.sourceRootFrontend + "assets/**/*", copyAssets);
-    watch(config.sourceRootFrontend + "**/*.css", copyCSS);
-    watch(config.sourceRootFrontend + "**/*.js", copyJS);
+    const watchOption = { events: ["add", "change"], delay: 2000 }
+    watch(config.sourceRootFrontend + "**/*.ts",watchOption, compileTSFrontend);
+    watch(config.sourceRootFrontend + "**/*.html",watchOption, copyHtml);
+    watch(config.sourceRootFrontend + "assets/**/*",watchOption, copyAssets);
+    watch(config.sourceRootFrontend + "**/*.css",watchOption, copyCSS);
+    watch(config.sourceRootFrontend + "**/*.js",watchOption, copyJS);
     // Watch for changes in backend
-    watch(config.sourceRootBackend + "**/*.ts", compileTSBackend);
+    watch(config.sourceRootBackend + "**/*.ts",watchOption, compileTSBackend);
 }
 
 function browsersyncServe(cb) {
