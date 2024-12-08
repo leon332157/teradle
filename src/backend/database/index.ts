@@ -1,8 +1,8 @@
-import { QuizDatabase } from './quiz';
-import { GameController } from './quiz-session';
+import {QuizDatabase} from './quiz';
+import {GameController} from './in-game';
 
-let quizDatabase: QuizDatabase = new QuizDatabase();
-let gameController: GameController = new GameController();
+let quizDatabase:QuizDatabase = new QuizDatabase();
+let gameController:GameController = new GameController();
 // singleton pattern
 export function getQuizDatabase() {
     if (!quizDatabase) {
@@ -17,4 +17,3 @@ export function getGameController() {
     }
     return gameController;
 }
-

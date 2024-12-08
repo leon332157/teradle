@@ -1,4 +1,4 @@
-import { writeFileSync, readFileSync } from 'fs';
+import {writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 export type Question = {
@@ -10,16 +10,16 @@ export type Question = {
 }
 
 export type Quiz = {
-    id: number;
-    name: string;
-    description: string;
-    questions: Question[];
+    id: number; // unique id of the quiz
+    name: string; // name of the quiz 
+    description: string; 
+    questions: Question[]; // list of questions
 }
 
 export class QuizDatabase {
     #quizList: Quiz[] = [];
-    #jsonPath = join(__dirname, '..', '..', '..', 'quiz.json');
-
+    #jsonPath = join(__dirname,'..','..','..','quiz.json');
+    
     constructor() {
         this.#quizList = this.load();
     }
@@ -44,7 +44,7 @@ export class QuizDatabase {
     */
     flush(): boolean {
         try {
-
+            
             console.debug("[Quiz Database] Flushing to", this.#jsonPath);
             writeFileSync(this.#jsonPath, JSON.stringify(this.#quizList));
             return true;
@@ -52,6 +52,14 @@ export class QuizDatabase {
             console.error("[Quiz Database] Flushing failed", e);
             return false;
         }
+    }
+
+    createQuiz(quiz: Quiz): boolean {
+        if (quiz.id === undefined) {
+            return false;
+        }
+        this.#quizList.push(quiz);
+        return this.flush()
     }
 
     /*
@@ -67,5 +75,34 @@ export class QuizDatabase {
             return this.#quizList[id];
         }
         return null;
+    }
+
+    /*
+    * updates a quiz by its id
+    * @param id the id of the quiz
+    * @param quiz the quiz object
+    * @return true if successful, false otherwise
+    */
+
+    updateQuiz(id: number, quiz: Quiz): boolean {
+        if (this.#quizList[id]) {
+            this.#quizList[id] = quiz;
+            return this.flush();
+        }
+        return false
+    }
+
+    /*
+    * deletes a quiz by its id
+    * @param id the id of the quiz
+    * @return true if successful, false otherwise
+    */
+
+    deleteQuiz(id: number): boolean {
+        if (this.#quizList[id]) {
+            delete this.#quizList[id];
+            return this.flush();
+        }
+        return false
     }
 }
