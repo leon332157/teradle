@@ -33,3 +33,21 @@ export async function createQuiz(req:Request, res:Response) {
         res.status(401).send({message: 'Error occured'});
     }
 }
+
+/**
+    * This function updates a quiz from the request body
+    * It expects a quiz object in the request body
+*/
+export async function updateQuiz(req:Request, res:Response) {
+    const quizDatabase = getQuizDatabase();
+    const quiz = req.body; // json
+    if (!quiz) {
+        res.status(400).send({message: 'Invalid quiz'});
+        return;
+    }
+    if (await quizDatabase.updateQuiz(quiz.id, quiz)) {
+        res.json({message: 'Quiz updated'});
+    } else {
+        res.status(401).send({message: 'Error occured'});
+    }
+}

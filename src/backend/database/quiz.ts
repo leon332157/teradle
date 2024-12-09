@@ -59,46 +59,6 @@ export class QuizDatabase {
         await sequelize.sync();
     }
 
-    /*
-    * Load the quiz list from the json
-    * @returns the quiz list
-    
-    async load(): Quiz[] {
-        try {
-            console.debug("[Quiz Database] Loading from database");
-            const res = await QuizModel.findAll();
-            this.#quizList = res.reduce((acc: Quiz[], curr: QuizModel) => {
-                acc.push({
-                    id: curr.id,
-                    name: curr.name,
-                    description: curr.description,
-                    questions: curr.questions
-                });
-                return acc;
-            })
-            return this.#quizList;
-        } catch (e) {
-            console.error("[Quiz Database] Loading failed", e);
-            return [];
-        }
-    }
-    
-    /*
-    * Flush the quiz list to the json
-    * @returns true if successful, false otherwise
-    
-    flush(): boolean {
-        try {
-
-            console.debug("[Quiz Database] Flushing to", this.#jsonPath);
-            writeFileSync(this.#jsonPath, JSON.stringify(this.#quizList));
-            return true;
-        } catch (e) {
-            console.error("[Quiz Database] Flushing failed", e);
-            return false;
-        }
-    }*/
-
     async createQuiz(quiz: Quiz): Promise<boolean> {
         const newQuizSql = QuizModel.build({
             name: quiz.name,

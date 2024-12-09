@@ -22,7 +22,11 @@ frontendRouter.get('/quiz-list', (req, res) => {
 });
 
 frontendRouter.get('/create-quiz', (req, res) => {
-  res.sendFile(join(dirname(__filename), '..', 'create-quiz.html'));
+  res.sendFile(join(dirname(__filename), '..', 'question-creation.html'));
+});
+
+frontendRouter.get('/edit-quiz/:id', (req, res) => {
+  res.sendFile(join(dirname(__filename), '..', 'question-creation.html'));
 });
 
 frontendRouter.get('/join-quiz', (req, res) => {
@@ -34,15 +38,15 @@ frontendRouter.get('/host-quiz', (req, res) => {
 });
 
 frontendRouter.get('/in-game/instructor/:sessionid/:questionNum', (req, res) => {
-  
 });
 
 frontendRouter.get('/in-game/student/:sessionid/:questionNum', (req, res) => {
-
 });
 
 frontendRouter.get('/leaderboard/instructor/:sessionid', (req, res) => {
+
 });
+
 app.use(frontendRouter);
 
 // add static file serving last
