@@ -13,6 +13,7 @@ export type Question = {
 export type Quiz = {
     id: number; // unique id of the quiz
     name: string; // name of the quiz 
+    description: string;
     questions: Question[]; // list of questions
 }
 
@@ -25,6 +26,7 @@ const sequelize = new Sequelize({
 class QuizModel extends Model<InferAttributes<QuizModel>, InferCreationAttributes<QuizModel>> {
     declare id: CreationOptional<number>;
     declare name: string;
+    declare description: string;
     declare questions: Question[];
 }
 
@@ -38,6 +40,10 @@ QuizModel.init({
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
     questions: {
         type: DataTypes.JSON, // store as JSON string
@@ -102,6 +108,7 @@ export class QuizDatabase {
     async createQuiz(quiz: Quiz): Promise<boolean> {
         const newQuizSql = QuizModel.build({
             name: quiz.name,
+            description: quiz.description,
             questions: quiz.questions
         });
         try {
@@ -134,6 +141,7 @@ export class QuizDatabase {
     updateQuiz(id: number, quiz: Quiz): Promise<boolean> {
         return QuizModel.update({
             name: quiz.name,
+            description: quiz.description,
             questions: quiz.questions
         }, {
             where: {
