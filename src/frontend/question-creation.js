@@ -11,6 +11,12 @@ const answerList = document.getElementById('answer-list');
 const questionTextInput = document.getElementById('question-text');
 
 let editingItem = null;
+let editingIndex = -1;
+
+const Quiz = {
+  name: '',
+  questions: [],
+};
 
 // Show popup for adding a question
 addQuestionButton.addEventListener('click', () => {
@@ -54,9 +60,9 @@ function loadQuiz(quizData) {
 
 }
 
-
 function saveQuiz() {
   const quizName = document.getElementById('quiz-name').value.trim();
+  Quiz.name = quizName;
   if (!quizName) {
     alert('Quiz name cannot be empty.');
     return;
@@ -98,7 +104,6 @@ function saveQuiz() {
   });
 
   const quiz = {
-    id: '',
     name: quizName,
     questions,
   };
@@ -194,14 +199,13 @@ function saveQuestion() {
   const questionText = questionTextInput.value.trim();
   const questionType = document.querySelector('input[name="question-type"]:checked')?.value;
   const timeLimit = parseInt(timeLimitInput.value);
+  const answers = [];
+  let correctAnswer = null;
 
   if (!questionText || !questionType || isNaN(timeLimit)) {
     console.error('Missing required fields');
     return;
   }
-
-  const answers = [];
-  let correctAnswer = null;
 
   answerList.querySelectorAll('li').forEach((li) => {
     const answerText = li.querySelector('input[type="text"]').value;
@@ -232,7 +236,9 @@ function saveQuestion() {
 
   editButton.onclick = () => {
     // Set editing state
+    const questionItems = Array.from(document.querySelectorAll('.question-item'));
     editingItem = editButton.closest('.question-item');
+    editingIndex = questionItems.indexOf(editingItem);
     questionPopup.classList.add('active');
     overlay.classList.add('active');
 
@@ -254,12 +260,24 @@ function saveQuestion() {
     renumberQuestions();
   };
 
+
+  const Question = {
+    type: questionType === 'multiple-choice' ? 'multiple' : 'single',
+    question: questionText,
+    options: answers,
+    answer: correctAnswer,
+    timeLimit: timeLimit,
+  };
+
   // Append or replace the question item
-  if (editingItem) {
+  if (editingItem && editingIndex >= 0) {
     questionList.replaceChild(questionItem, editingItem);
-    editingItem = null; // Clear editing state
+    Quiz.questions[editingIndex] = Question;
+    editingItem = null;
+    editingIndex
   } else {
     questionList.appendChild(questionItem);
+    Quiz.questions.push(Question);
   }
 
   closePopup();
