@@ -43,7 +43,8 @@ frontendRouter.get('/in-game/student/:sessionid/:questionNum', (req, res) => {
 
 });
 
-frontendRouter.get('/leaderboard/instructor/:sessionid', (req, res) => {
+frontendRouter.get('/leaderboard', (req, res) => {
+  res.sendFile(join(dirname(__filename), '..', 'leaderboard-scoring.html'));
 });
 
 app.use(frontendRouter);

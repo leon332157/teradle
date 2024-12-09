@@ -1,7 +1,10 @@
+import { Participant } from "../backend/database/in-game";
+
 (
   async () => {
     try {
-      const leaderboard = await fetch('http://localhost:8000/api/leaderboard-scoring/getLeaderboard');
+      const sessionId = new URLSearchParams(window.location.search).get('sessionId');
+      const leaderboard = await fetch(`http://localhost:8000/api/leaderboard-scoring/getLeaderboard?sessionId=${sessionId}`);
 
       if (!leaderboard.ok) {
         throw new Error(`Failed to fetch leaderboard: ${leaderboard.status}`);
@@ -16,17 +19,17 @@
         return;
       }
 
-      leaderboardArray.forEach((participant) => {
+      leaderboardArray.forEach((participant: Participant) => {
         leaderboardElement.appendChild(getParticipantElement(participant));
       });
     }
-    catch (error) {
+    catch (error: any) {
       console.error(`Error loading leaderboard: ${error.message}`);
     }
   }
 )();
 
-const getParticipantElement = (participant) => {
+const getParticipantElement = (participant: Participant) => {
   const div = document.createElement("div");
   div.className = "player";
 

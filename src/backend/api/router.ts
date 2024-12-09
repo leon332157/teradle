@@ -24,7 +24,7 @@ export class ApiRouter {
     this.router.get('/api/createSession', createSession)
     this.router.get('/api/addParticipant', addParticipant)
     this.router.post('/api/nextQuestion', nextQuestion)
-    this.router.get('/api/leaderboard-scoring/getLeaderboard/', getLeaderboard);
+    this.router.get('/api/leaderboard-scoring/getLeaderboard', getLeaderboard);
   }
 
   public getRouter() {

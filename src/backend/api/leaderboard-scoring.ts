@@ -3,16 +3,17 @@ import { GameController, Participant } from "../database/in-game";
 
 export function getLeaderboard(req: Request, res: Response) {
   const gameController = new GameController();
-  // const game = gameController.getSession(parseInt(req.body.sessionId));
-  const game = null;
+  const game = gameController.getSession(parseInt(req.query.sessionId as string));
 
-  if (!game) {
-    // let leaderboard: Participant[] = [...game.participants]
-    //   .sort((a, b) => b.score - a.score)
-    //   .slice(6);
+  if (game
+    || 1 //temporary to make sure mock data returns
+  ) {
+    let leaderboard: Participant[] = (game?.participants ?? [])
+      .sort((a, b) => b.score - a.score)
+      .slice(6);
 
     // TEMPORARY
-    const leaderboard = [
+    leaderboard = [
       { id: 1, name: "Kevin", score: 1000 },
       { id: 2, name: "Selena", score: 1 },
       { id: 3, name: "Xiaocong", score: 100000 },
@@ -28,6 +29,6 @@ export function getLeaderboard(req: Request, res: Response) {
     res.json({ leaderboard });
   }
   else {
-    res.status(404).send("Game not found");
+    res.status(404).send(`Game not found with id: ${req.query.sessionId}`);
   }
 }
