@@ -192,7 +192,7 @@ function saveQuestion() {
     questionList.replaceChild(questionItem, editingItem);
     Quiz.questions[editingIndex] = Question;
     editingItem = null;
-    editingIndex
+    editingIndex = -1;
   } else {
     questionList.appendChild(questionItem);
     Quiz.questions.push(Question);
@@ -208,7 +208,7 @@ function convertJSONtoHTML (question) {
   const answers = question.options;
   const answerIndex = question.answer;
   const timeLimit = question.timeLimit;
-  const questionType = question.type;
+  const questionType = question.type === 'multiple' ? 'multiple-choice' : 'true-false';
   // Use the question template
   console.log(question);
   const template = document.getElementById('question-template');
@@ -244,16 +244,20 @@ function convertJSONtoHTML (question) {
     questionTextInput.value = questionText;
     document.querySelector(`input[value="${questionType}"]`).checked = true;
     editAnswerOptions();
-    answerList.querySelectorAll('li').forEach((li, index) => {
-      li.querySelector('input[type="text"]').value = answers[index];
-      li.querySelector('input[type="radio"]').checked = answers[index] === answerIndex;
+    answerList.querySelectorAll('li').forEach((li, i) => {
+      li.querySelector('input[type="text"]').value = answers[i];
+      li.querySelector('input[type="radio"]').checked = i === answerIndex;
     });
     validateInputs();
   };
 
   deleteButton.onclick = () => {
+    const questionItems = Array.from(document.querySelectorAll('.question-item'));  
     const itemToDelete = deleteButton.closest('.question-item');
+    const index = questionItems.indexOf(itemToDelete);
+    console.log(index);
     itemToDelete.remove();
+    Quiz.questions = Quiz.questions.filter((_, i) => i !== index);
     renumberQuestions();
   };
 
