@@ -10,6 +10,8 @@ const timeLimitError = document.getElementById('time-limit-error');
 const answerList = document.getElementById('answer-list');
 const questionTextInput = document.getElementById('question-text');
 
+let editingItem = null;
+
 // Show popup for adding a question
 addQuestionButton.addEventListener('click', () => {
   questionPopup.classList.add('active');
@@ -208,15 +210,6 @@ function saveQuestion() {
     if (isCorrect) correctAnswer = answerText;
   });
 
-  const questionData = {
-    text: questionText,
-    type: questionType,
-    timeLimit: timeLimit,
-    answers: answers,
-    correctAnswer: correctAnswer
-  };
-  quizData.questions.push(questionData);
-
   // Use the question template
   const template = document.getElementById('question-template');
   const questionItem = template.content.cloneNode(true);
@@ -274,24 +267,18 @@ function saveQuestion() {
   clearForm();
 }
 
-// Function to get quiz data as JSON string
-function getQuizJSON() {
-  return JSON.stringify(quizData);
-}
-
-// Add event listener for the Save Quiz button
-document.getElementById('save-quiz').addEventListener('click', () => {
-  const quizJSON = getQuizJSON();
-  console.log('Quiz JSON:', quizJSON);
-  // You can send quizJSON to your server here
-});
-
 // Function to renumber questions
 function renumberQuestions() {
   const questionItems = document.querySelectorAll('.question-item');
-  questionItems.forEach((item, index) => {
-    const questionNumberElement = item.querySelector('.question-header p strong');
-    questionNumberElement.textContent = `${index + 1}. ${item.querySelector('.question-header').textContent.includes('True/False') ? 'True/False' : 'Multiple Choice'} Question`;
+  questionItems.forEach((item) => {
+    const questionHeader = item.querySelector('.question-header');
+    const questionTitleElement = questionHeader?.querySelector('.question-title');
+
+    if (questionTitleElement) {
+      questionTitleElement.textContent = `${questionTitleElement.textContent}`;
+    } else {
+      console.error('Invalid question item structure:', item);
+    }
   });
 }
 
