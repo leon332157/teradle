@@ -1,79 +1,95 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: Arial, sans-serif;
-    background-color: #ffc5d3;
-    color: #ffffff;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-}
-
-/* PIN Container */
-#pin-container {
     background-color: #ffffff;
-    color: #333;
-    padding: 20px;
-    font-size: 1.2em;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#pin-container p {
     margin: 0;
-}
-
-#pin {
-    font-size: 2.5em;
-}
-
-/* Player Count */
-#player-count {
-    font-size: 1.5em;
-    margin-top: 10px;
-    font-weight: bold;
-    text-align: left;
-}
-
-/* Start Button */
-#start-button {
-    font-size: 1.5em;
-    margin-top: 10px;
-    font-weight: bold;
-    text-align: right;
-}
-
-/* Player List */
-#player-list {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.quiz-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.quiz-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 15px;
+    background-color: #34495e;
+    color: white;
+    width: 30%;
+    margin: 50px auto 20px auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game-pin {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.session-details {
+    text-align: center;
+    padding: 10px;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    width: 50%;
+    max-width: 950px;
     margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.player-count {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.player-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    justify-content: center;
 }
 
 .player {
-    background-color: #ffc5d3;
-    border-radius: 5px;
-    margin: 10px;
-    padding: 15px;
-    font-size: 1.5em;
-    width: 150px;
+    background-color: #34495e;
     color: white;
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Footer */
-#footer {
-    background-color: #99606e;
-    color: #ffffff;
-    padding: 15px;
+.start-button {
     position: fixed;
-    width: 100%;
-    bottom: 0;
-    font-size: 1em;
+    top: 30px;
+    right: 32px;
+    padding: 8px 11px;
+    background-color: #34495e;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+    cursor: pointer;
+}
+
+.start-button button {
+    border: none;
+    background: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.start-button:hover {
+    background-color: #c0dbf7;
 }
