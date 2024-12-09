@@ -12,9 +12,9 @@ const questionTextInput = document.getElementById('question-text');
 
 let editingItem = null;
 let editingIndex = -1;
+let isUpdating = false;
 
 const Quiz = {
-  id: '',
   name: '',
   questions: [],
 };
@@ -31,7 +31,7 @@ addQuestionButton.addEventListener('click', () => {
 saveQuestionButton.addEventListener('click', saveQuestion);
 
 // Function to save quiz
-saveQuizButton.addEventListener('click', saveQuiz);
+saveQuizButton.addEventListener('click', isUpdating ? updateQuiz : saveQuiz);
 
 // Close popup
 overlay.addEventListener('click', closePopup);
@@ -49,38 +49,43 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentUrl = window.location.href;
 
   const url = new URL(currentUrl);
-
-  const op = url.searchParams.get('operation');
+  
+  const op = url.searchParams.get('edit-quiz');
   const id = url.searchParams.get('id');
-  if (op == 'edit' && id) {
+  if (op && id) {
     loadQuiz(id);
+    isUpdating = true;
   }
 })
 
-async function loadQuiz(quizId) {
-  try {
-    const res = await fetch(`/api/quiz/single?id=${encodeURIComponent(quizId)}`);
-    if (!res.ok) {
-      throw new Error('Failed to fetch quiz details');
-    }
-    const QuizData = await res.json();
-
-    if (QuizData) {
+async function loadQuiz(id) {
+  fetch(`/api/quiz/single?id=${encodeURIComponent(id)}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(res => res.json())
+    .then(QuizData => {
+      if (!QuizData || !QuizData.id || !QuizData.name || !Array.isArray(QuizData.questions)) {
+        throw new Error('Invalid quiz data');
+      }
+  
       Quiz.id = QuizData.id;
       Quiz.name = QuizData.name;
       Quiz.questions = QuizData.questions;
-
+  
       document.getElementById('quiz-name').value = Quiz.name;
+  
       Quiz.questions.forEach((question) => {
         const questionItem = convertJSONtoHTML(question);
         questionList.appendChild(questionItem);
       });
-    } else {
-      console.error('Quiz not found');
-    }
-  } catch (e) {
-    console.error('Failed to load quiz:', e);
-  }
+    })
+    .catch ((e) =>{
+      console.error('Failed to load quiz:', e);
+      alert('Error: Could not load quiz. Please try again later.');
+    });
 }
 
 function saveQuiz() {
@@ -91,11 +96,53 @@ function saveQuiz() {
     return;
   }
 
-  console.log('Quiz saved:', Quiz);
-
-  alert('Quiz saved successfully!');
+  console.log('Saving quiz:', Quiz);
+  
+  fetch('/api/quiz/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(Quiz),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Quiz saved:', data);
+    alert('Quiz saved successfully!');
+  })
+  .catch((error) => {
+    console.error('Error saving quiz:', error);
+    alert('Failed to save quiz.');
+  });
 }
 
+function updateQuiz() {
+  const quizName = document.getElementById('quiz-name').value.trim();
+  Quiz.name = quizName;
+  if (!quizName) {
+    alert('Quiz name cannot be empty.');
+    return;
+  }
+
+  console.log('Updating quiz:', Quiz);
+  
+  fetch('/api/quiz/update', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(Quiz),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Quiz updated:', data);
+    alert('Quiz updated successfully!');
+  })
+  .catch((error) => {
+    console.error('Error updating quiz:', error);
+    alert('Failed to update quiz.');
+  });
+}
 
 // Function to close the popup and clear the form
 function closePopup() {
