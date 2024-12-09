@@ -12,6 +12,7 @@ export type Game = {
     participants: Participant[]; // list of participants
     questions: Question[]; // list of questions loaded from quiz database
     currentQuestion: number; // index of the current question
+    isStarted: boolean; // flag to indicate if the game has started
 }
 
 /*
@@ -36,7 +37,8 @@ export class GameController {
             sessionId: Math.floor(Math.random() * 10000),
             participants: [],
             questions: quizObj.questions,
-            currentQuestion: 0
+            currentQuestion: 0,
+            isStarted: false
         }
         this.#activeSessions.set(game.sessionId, game);
         return game;
@@ -62,6 +64,20 @@ export class GameController {
         const game = this.#activeSessions.get(sessionId);
         if (game) {
             game.participants.push(participant);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Start the session
+     * @param {number} sessionId - the id of the session
+     * @returns boolean - true if the session was started, false otherwise
+     */
+    startSession(sessionId: number): boolean {
+        const game = this.#activeSessions.get(sessionId);
+        if (game) {
+            game.isStarted = true;
             return true;
         }
         return false;
