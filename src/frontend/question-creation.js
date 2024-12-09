@@ -14,6 +14,7 @@ let editingItem = null;
 let editingIndex = -1;
 
 const Quiz = {
+  id: '',
   name: '',
   questions: [],
 };
@@ -52,21 +53,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const op = url.searchParams.get('operation');
   const id = url.searchParams.get('id');
   if (op == 'edit' && id) {
-    loadQuiz();
+    loadQuiz(id);
   }
 })
 
-async function loadQuiz() {
-  fetch(''); // correct API
-  const quizData = await response.json();
-  Quiz.name = quizData.name;
-  Quiz.questions = quizData.questions;
-  
-  document.getElementById('quiz-name').value = Quiz.name;
-  Quiz.questions.forEach((question) => {
-    const questionItem = convertJSONtoHTML(question);
-    questionList.appendChild(questionItem);
-  });
+async function loadQuiz(quizId) {
+  try {
+    const res = await fetch(`/api/quiz/single?id=${encodeURIComponent(quizId)}`);
+    if (!res.ok) {
+      throw new Error('Failed to fetch quiz details');
+    }
+    const QuizData = await res.json();
+
+    if (QuizData) {
+      Quiz.id = QuizData.id;
+      Quiz.name = QuizData.name;
+      Quiz.questions = QuizData.questions;
+
+      document.getElementById('quiz-name').value = Quiz.name;
+      Quiz.questions.forEach((question) => {
+        const questionItem = convertJSONtoHTML(question);
+        questionList.appendChild(questionItem);
+      });
+    } else {
+      console.error('Quiz not found');
+    }
+  } catch (e) {
+    console.error('Failed to load quiz:', e);
+  }
 }
 
 function saveQuiz() {
