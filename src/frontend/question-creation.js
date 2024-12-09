@@ -56,9 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })
 
-async function loadQuiz(quizData) {
-  fetch('http://localhost:8000/api/edit' + id);
-
+async function loadQuiz() {
+  fetch(''); // correct API
+  const quizData = await response.json();
+  Quiz.name = quizData.name;
+  Quiz.questions = quizData.questions;
+  
+  document.getElementById('quiz-name').value = Quiz.name;
+  Quiz.questions.forEach((question) => {
+    const questionItem = convertJSONtoHTML(question);
+    questionList.appendChild(questionItem);
+  });
 }
 
 function saveQuiz() {
