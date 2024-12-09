@@ -34,7 +34,7 @@ frontendRouter.get('/host-quiz', (req, res) => {
 });
 
 frontendRouter.get('/in-game/instructor/:sessionid/:questionNum', (req, res) => {
-  
+
 });
 
 frontendRouter.get('/in-game/student/:sessionid/:questionNum', (req, res) => {
@@ -43,6 +43,7 @@ frontendRouter.get('/in-game/student/:sessionid/:questionNum', (req, res) => {
 
 frontendRouter.get('/leaderboard/instructor/:sessionid', (req, res) => {
 });
+
 app.use(frontendRouter);
 
 // add static file serving last
