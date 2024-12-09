@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })
 
-function loadQuiz(quizData) {
+async function loadQuiz(quizData) {
+  fetch('http://localhost:8000/api/edit' + id);
 
 }
 
@@ -68,49 +69,8 @@ function saveQuiz() {
     return;
   }
 
-  const questions = [];
-  const questionItems = document.querySelectorAll('.question-item');
+  console.log('Quiz saved:', Quiz);
 
-  questionItems.forEach((item, index) => {
-    const questionText = item.querySelector('.question-title').textContent.trim();
-    const timeLimitText = item.querySelector('.time-limit').textContent;
-    const timeLimit = parseInt(timeLimitText.replace('Time Limit: ', '').replace('s', ''));
-
-    const options = [];
-    const answerContainer = item.querySelector('.answer-container');
-    const optionElements = answerContainer.querySelectorAll('.answer-item');
-
-    let correctAnswer = -1;
-    optionElements.forEach((optionElement, optionIndex) => {
-      const optionText = optionElement.textContent.replace(' (Correct)', '').trim();
-      if (optionElement.textContent.includes('(Correct)')) {
-        correctAnswer = optionIndex;
-      }
-      options.push(optionText);
-    });
-
-    const type = options.length === 2 ? 'single' : 'multiple';
-
-    const question = {
-      id: index + 1,
-      type,
-      question: questionText,
-      options,
-      answer: correctAnswer,
-      timeLimit,
-    };
-
-    questions.push(question);
-  });
-
-  const quiz = {
-    name: quizName,
-    questions,
-  };
-
-  console.log('Quiz saved:', quiz);
-
-  // Optionally, send the quiz JSON to a server or download it
   alert('Quiz saved successfully!');
 }
 
@@ -199,22 +159,50 @@ function saveQuestion() {
   const questionText = questionTextInput.value.trim();
   const questionType = document.querySelector('input[name="question-type"]:checked')?.value;
   const timeLimit = parseInt(timeLimitInput.value);
-  const answers = [];
-  let correctAnswer = null;
+  const options = [];
+  let answer = -1;
 
-  if (!questionText || !questionType || isNaN(timeLimit)) {
-    console.error('Missing required fields');
-    return;
-  }
-
-  answerList.querySelectorAll('li').forEach((li) => {
+  answerList.querySelectorAll('li').forEach((li, i) => {
     const answerText = li.querySelector('input[type="text"]').value;
     const isCorrect = li.querySelector('input[type="radio"]').checked;
-    answers.push(answerText);
-    if (isCorrect) correctAnswer = answerText;
+    options.push(answerText);
+    if (isCorrect) answer = i;
   });
 
+  const Question = {
+    type: questionType === 'multiple-choice' ? 'multiple' : 'single',
+    question: questionText,
+    options: options,
+    answer: answer,
+    timeLimit: timeLimit,
+  };
+
+  const questionItem = convertJSONtoHTML(Question);
+
+  // Append or replace the question item
+  if (editingItem && editingIndex >= 0) {
+    questionList.replaceChild(questionItem, editingItem);
+    Quiz.questions[editingIndex] = Question;
+    editingItem = null;
+    editingIndex
+  } else {
+    questionList.appendChild(questionItem);
+    Quiz.questions.push(Question);
+  }
+
+  closePopup();
+  renumberQuestions();
+  clearForm();
+}
+
+function convertJSONtoHTML (question) {
+  const questionText = question.question;
+  const answers = question.options;
+  const answerIndex = question.answer;
+  const timeLimit = question.timeLimit;
+  const questionType = question.type;
   // Use the question template
+  console.log(question);
   const template = document.getElementById('question-template');
   const questionItem = template.content.cloneNode(true);
 
@@ -223,10 +211,11 @@ function saveQuestion() {
   questionItem.querySelector('.time-limit').textContent = `Time Limit: ${timeLimit}s`;
 
   const answerContainer = questionItem.querySelector('.answer-container');
+  
   answers.forEach((answer) => {
     const answerElement = document.createElement('p');
     answerElement.classList.add('answer-item');
-    answerElement.textContent = `${answer}${answer === correctAnswer ? ' (Correct)' : ''}`;
+    answerElement.textContent = `${answer}${answer === answers[answerIndex] ? ' (Correct)' : ''}`;
     answerContainer.appendChild(answerElement);
   });
 
@@ -249,7 +238,7 @@ function saveQuestion() {
     editAnswerOptions();
     answerList.querySelectorAll('li').forEach((li, index) => {
       li.querySelector('input[type="text"]').value = answers[index];
-      li.querySelector('input[type="radio"]').checked = answers[index] === correctAnswer;
+      li.querySelector('input[type="radio"]').checked = answers[index] === answerIndex;
     });
     validateInputs();
   };
@@ -260,29 +249,7 @@ function saveQuestion() {
     renumberQuestions();
   };
 
-
-  const Question = {
-    type: questionType === 'multiple-choice' ? 'multiple' : 'single',
-    question: questionText,
-    options: answers,
-    answer: correctAnswer,
-    timeLimit: timeLimit,
-  };
-
-  // Append or replace the question item
-  if (editingItem && editingIndex >= 0) {
-    questionList.replaceChild(questionItem, editingItem);
-    Quiz.questions[editingIndex] = Question;
-    editingItem = null;
-    editingIndex
-  } else {
-    questionList.appendChild(questionItem);
-    Quiz.questions.push(Question);
-  }
-
-  closePopup();
-  renumberQuestions();
-  clearForm();
+  return questionItem;
 }
 
 // Function to renumber questions
