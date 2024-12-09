@@ -77,11 +77,25 @@ function saveQuiz() {
     return;
   }
 
-  console.log('Quiz saved:', Quiz);
-
-  alert('Quiz saved successfully!');
+  console.log('Saving quiz:', Quiz);
+  
+  fetch('/api/quiz', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(Quiz),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Quiz saved:', data);
+    alert('Quiz saved successfully!');
+  })
+  .catch((error) => {
+    console.error('Error saving quiz:', error);
+    alert('Failed to save quiz.');
+  });
 }
-
 
 // Function to close the popup and clear the form
 function closePopup() {
