@@ -1,34 +1,34 @@
 import { Request, Response } from "express";
-import { GameController, Participant } from "../database/in-game";
+import { PlayerDatabase } from "../database/player";
+import { getPlayerDatabase, getSessionDatabase } from "../database";
+import { SessionDatabase } from "../database/session";
 
-export function getLeaderboard(req: Request, res: Response) {
-  const gameController = new GameController();
-  const game = gameController.getSession(parseInt(req.query.sessionId as string));
+//fix this function so that it sorts and slices
+export async function getLeaderboard(req: Request, res: Response) {
+  const sessionId: number = parseInt(req.query.sessionId as string);
+  const sessionDatabase: SessionDatabase = getSessionDatabase();
+  const playerDatabase: PlayerDatabase = getPlayerDatabase();
 
-  if (game
-    || 1 //temporary to make sure mock data returns
-  ) {
-    let leaderboard: Participant[] = (game?.participants ?? [])
+  if (await sessionDatabase.doesSessionExist(sessionId)) //temporary to make sure mock data returns
+  {
+    const playersAndScores: { playerName: string, score: number }[] = await playerDatabase.getTopNPlayers(sessionId, 6);
+    console.log(playersAndScores);
+    let leaderboard: { playerName: string, score: number }[] = playersAndScores
       .sort((a, b) => b.score - a.score)
-      .slice(6);
 
     // TEMPORARY
-    leaderboard = [
-      { id: 1, name: "Kevin", score: 1000 },
-      { id: 2, name: "Selena", score: 1 },
-      { id: 3, name: "Xiaocong", score: 100000 },
-      { id: 4, name: "Phoebe", score: 0 },
-      { id: 5, name: "Shuby", score: -1 },
-      { id: 6, name: "Jerry", score: -1000 }
-    ];
+    // leaderboard = [
+    //   { playerName: "Kevin", score: 1000 },
+    //   { playerName: "Selena", score: 1 },
+    //   { playerName: "Xiaocong", score: 100000 },
+    //   { playerName: "Phoebe", score: 0 },
+    //   { playerName: "Shuby", score: -1 },
+    //   { playerName: "Jerry", score: -1000 }
+    // ];
 
-    leaderboard
-      .sort((a, b) => b.score - a.score)
-      .slice(6);
-
-    res.json({ leaderboard });
+    res.json(leaderboard);
   }
   else {
-    res.status(404).send(`Game not found with id: ${req.query.sessionId}`);
+    res.status(404).send(`Game not found with id: ${sessionId}`);
   }
 }
