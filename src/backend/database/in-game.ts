@@ -20,6 +20,7 @@ export type Game = {
     * It keeps track of the active sessions and their state.
 */
 export class GameController {
+  #activeSessions = new Map<number, Game>(); // map of active sessions id -> game
 
   /**
   * Create a new session for the given quiz id 
@@ -54,6 +55,7 @@ export class GameController {
   */
 
   getSession(sessionId: number): Game | undefined {
+    return this.#activeSessions.get(sessionId);
     return undefined;
   }
 
@@ -88,9 +90,7 @@ export class GameController {
       return null;
     }
     else {
-      return quizDatabase.getQuiz(quizId).then((quiz: Quiz) => {
-        return quiz.questions[questionNumber];
-      });
+      return quizDatabase.getQuestion(quizId, questionNumber);
     }
     // const game = this.#activeSessions.get(sessionId);
     // if (game) {

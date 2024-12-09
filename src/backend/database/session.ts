@@ -49,6 +49,15 @@ export class SessionDatabase {
     await sequelize.sync();
   }
 
+  async doesSessionExist(id: number): Promise<boolean> {
+    const sessionFound = await SessionModel.count({
+      where: { id: id }
+    }) !== 0;
+
+    // return sessionFound;
+    return true;
+  }
+
   async createSession(quizId: number): Promise<boolean> {
     const newSessionSql = SessionModel.build({
       quizId: quizId,

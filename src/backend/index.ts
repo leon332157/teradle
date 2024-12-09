@@ -1,8 +1,10 @@
 import express from 'express';
 import { join, dirname } from 'path';
+import cors from 'cors';
 
 import { ApiRouter } from './api/router';
 const app = express();
+app.use(cors())
 const port = 8000;
 
 // add json body parser
@@ -33,15 +35,22 @@ frontendRouter.get('/host-quiz', (req, res) => {
   res.sendFile(join(dirname(__filename), '..', 'quiz-session.html'));
 });
 
-frontendRouter.get('/in-game/instructor/:sessionid/:questionNum', (req, res) => {
+frontendRouter.post('/next-question', (req, res) => {
+  const sessionId: string = req.query.sessionId as string;
+  console.log(sessionId);
+  res.redirect(`/in-game/instructor?sessionId=${sessionId}`);
+})
+
+frontendRouter.get('/in-game/instructor', (req, res) => {
+  res.sendFile(join(dirname(__filename), '..', 'quiz-list.html'));
+});
+
+frontendRouter.get('/in-game/student/', (req, res) => {
 
 });
 
-frontendRouter.get('/in-game/student/:sessionid/:questionNum', (req, res) => {
-
-});
-
-frontendRouter.get('/leaderboard/instructor/:sessionid', (req, res) => {
+frontendRouter.get('/leaderboard', (req, res) => {
+  res.sendFile(join(dirname(__filename), '..', 'leaderboard-scoring.html'));
 });
 
 app.use(frontendRouter);

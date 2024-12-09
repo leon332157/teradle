@@ -65,6 +65,34 @@ export class PlayerDatabase {
       return false;
     }
   }
+  async getTopNPlayers(sessionId: number, n: number): Promise<{ playerName: string, score: number }[]> {
+    const playersAndScores = PlayerModel.findAll({
+      attributes: ['name', 'score'],
+      limit: n,
+      order: [['score', 'DESC']],
+      where: { sessionId: sessionId }
+    }).then(
+      (players: PlayerModel[]): { playerName: string, score: number }[] => players.map((player: PlayerModel) => {
+        return { playerName: player.name, score: player.score };
+      })
+    ).catch(
+      (reason: any) => {
+        console.error(reason);
+        return [];
+      }
+    );
+
+    const leaderboard = [
+      { playerName: "Kevin", score: 1000 },
+      { playerName: "Selena", score: 1 },
+      { playerName: "Xiaocong", score: 100000 },
+      { playerName: "Phoebe", score: 0 },
+      { playerName: "Shuby", score: -1 },
+      { playerName: "Jerry", score: -1000 }
+    ];
+
+    return leaderboard;
+  }
 
   async getPlayerScore(sessionId: number, name: string): Promise<number> {
     const playerScore = PlayerModel.findOne({
