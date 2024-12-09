@@ -2,7 +2,7 @@ import express from "express";
 
 import { getTest } from "./test";
 import { getSingleQuiz, createQuiz } from "./quiz";
-import { getSession, createSession, addParticipant, nextQuestion } from "./in-game";
+import { getSession, createSession, addParticipant, nextQuestion, startGameSession } from "./in-game";
 import { joinQuiz,checkSessionStarted } from "./join-quiz";
 
 export class ApiRouter {
@@ -29,6 +29,7 @@ export class ApiRouter {
     this.router.post('/api/join',joinQuiz);
     // check if session started route
     this.router.get('/api/session/:pin/started', checkSessionStarted);
+    this.router.post('/api/session/:sessionId/start', startGameSession);
   }
 
   public getRouter() {
