@@ -56,6 +56,7 @@ export class GameController {
 
   getSession(sessionId: number): Game | undefined {
     return this.#activeSessions.get(sessionId);
+    return undefined;
   }
 
   /**

@@ -1,62 +1,34 @@
-async function fetchSessionDetails() {
-    try {
-        const response = await fetch('http://localhost:3000/api/quiz');
-        const sessionData = await response.json();
-        updateGamePin(sessionData.pin);
+// Run at dom load
+(() => {
+    setInterval(async () => {
+        const playerList: HTMLDivElement = document.getElementById('player-list') as HTMLDivElement;
+        const playerCount: HTMLParagraphElement = document.getElementById('player-count') as HTMLParagraphElement;
 
-        updatePlayerList(sessionData.players);
+        const players: string[] = await getSessionPlayers();
+        updatePlayerList(players, playerList, playerCount);
+    }, 3000);
+})();
 
-        updatePlayerCount(sessionData.players.length);
-    } catch (error) {
-        console.error('Error fetching session details', error)
-    }
+async function getSessionPlayers(): Promise<string[]> {
+    return await fetch("/api/getParticipants").then(async (res: Response): Promise<string[]> => {
+        return await res.json();
+        // JSON.parse(await res.json());
+    }).catch((reason: any) => {
+        console.error(reason);
+        return [];
+    });
 }
 
-function updateGamePin(pin: number) {
-    const pinElement = document.getElementById('pin')
-    if (pinElement) {
-        pinElement.textContent = `${pin} Players`;
-    }
+function updatePlayerList(players: string[], playerList: HTMLElement, playerCount: HTMLElement): void {
+    playerList.innerHTML = '';
+
+    players.forEach((player) => {
+        const playerDiv = document.createElement('div');
+        playerDiv.className = 'player';
+        playerDiv.textContent = player;
+        playerList.appendChild(playerDiv);
+    });
+
+    playerCount.textContent = `${players.length} Players`;
 }
 
-function updatePlayerList(players: string[]) {
-    const playerListElement = document.getElementById('player-list')
-    if (playerListElement) {
-        players.forEach(player => {
-            const playerDiv = document.createElement('div');
-            playerDiv.className = 'player';
-            playerDiv.textContent = player;
-            playerListElement.appendChild(playerDiv);
-        });
-    }
-}
-
-function updatePlayerCount(count: number) {
-    const playerListElement = document.getElementById('player-list')
-    if (playerListElement) {
-        playerListElement.textContent = `${count} Players`;
-    }
-}
-
-function start() {
-    console.log("Quiz has started!")
-
-    const playerCount = document.getElementById('player-count');
-    const sessionDetails = document.getElementById('session-details');
-    const startButton = document.getElementById('start-button') as HTMLButtonElement;
-
-}
-
-function displayQuizDetails(quizName: string, pin: number, numJoined: number) {
-    const sessionDetails = document.getElementById('session-details')
-
-    if (sessionDetails) {
-        sessionDetails.innerHTML = `
-            <h3>Quiz Name: ${quizName}</h3>
-            <p>PIN: ${pin} </p>
-            <p>Number of People Joined: ${numJoined}</p>
-        `
-    }
-}
-
-window.onload = fetchSessionDetails;

@@ -65,7 +65,6 @@ export class PlayerDatabase {
       return false;
     }
   }
-
   async getTopNPlayers(sessionId: number, n: number): Promise<{ playerName: string, score: number }[]> {
     const playersAndScores = PlayerModel.findAll({
       attributes: ['name', 'score'],
