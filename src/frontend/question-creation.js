@@ -1,4 +1,5 @@
 const addQuestionButton = document.getElementById('add-question');
+const saveQuizButton = document.getElementById('save-quiz');
 const questionPopup = document.getElementById('question-popup');
 const overlay = document.getElementById('overlay');
 const closePopupButton = document.getElementById('close-popup');
@@ -9,6 +10,8 @@ const timeLimitError = document.getElementById('time-limit-error');
 const answerList = document.getElementById('answer-list');
 const questionTextInput = document.getElementById('question-text');
 
+let editingItem = null;
+
 // Show popup for adding a question
 addQuestionButton.addEventListener('click', () => {
   questionPopup.classList.add('active');
@@ -16,6 +19,12 @@ addQuestionButton.addEventListener('click', () => {
   timeLimitError.textContent = ''; // Clear any previous error messages
   validateInputs(); 
 });
+
+// Function to save question
+saveQuestionButton.addEventListener('click', saveQuestion);
+
+// Function to save quiz
+saveQuizButton.addEventListener('click', saveQuiz);
 
 // Close popup
 overlay.addEventListener('click', closePopup);
@@ -41,9 +50,65 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })
 
-function loadQuiz(id) {
-  fetch(`http://localhost:3000/api/quiz/single?id=${id}`)
+function loadQuiz(quizData) {
+
 }
+
+
+function saveQuiz() {
+  const quizName = document.getElementById('quiz-name').value.trim();
+  if (!quizName) {
+    alert('Quiz name cannot be empty.');
+    return;
+  }
+
+  const questions = [];
+  const questionItems = document.querySelectorAll('.question-item');
+
+  questionItems.forEach((item, index) => {
+    const questionText = item.querySelector('.question-title').textContent.trim();
+    const timeLimitText = item.querySelector('.time-limit').textContent;
+    const timeLimit = parseInt(timeLimitText.replace('Time Limit: ', '').replace('s', ''));
+
+    const options = [];
+    const answerContainer = item.querySelector('.answer-container');
+    const optionElements = answerContainer.querySelectorAll('.answer-item');
+
+    let correctAnswer = -1;
+    optionElements.forEach((optionElement, optionIndex) => {
+      const optionText = optionElement.textContent.replace(' (Correct)', '').trim();
+      if (optionElement.textContent.includes('(Correct)')) {
+        correctAnswer = optionIndex;
+      }
+      options.push(optionText);
+    });
+
+    const type = options.length === 2 ? 'single' : 'multiple';
+
+    const question = {
+      id: index + 1,
+      type,
+      question: questionText,
+      options,
+      answer: correctAnswer,
+      timeLimit,
+    };
+
+    questions.push(question);
+  });
+
+  const quiz = {
+    id: '',
+    name: quizName,
+    questions,
+  };
+
+  console.log('Quiz saved:', quiz);
+
+  // Optionally, send the quiz JSON to a server or download it
+  alert('Quiz saved successfully!');
+}
+
 
 // Function to close the popup and clear the form
 function closePopup() {
@@ -125,12 +190,6 @@ function editAnswerOptions() {
   validateInputs();
 }
 
-// Function to save question
-saveQuestionButton.addEventListener('click', saveQuestion); // Ensure button click triggers save
-
-// Global variable to track editing state
-let editingItem = null;
-
 function saveQuestion() {
   const questionText = questionTextInput.value.trim();
   const questionType = document.querySelector('input[name="question-type"]:checked')?.value;
@@ -204,7 +263,6 @@ function saveQuestion() {
   }
 
   closePopup();
-  // Renumber questions and clear the form
   renumberQuestions();
   clearForm();
 }
@@ -212,12 +270,12 @@ function saveQuestion() {
 // Function to renumber questions
 function renumberQuestions() {
   const questionItems = document.querySelectorAll('.question-item');
-  questionItems.forEach((item, index) => {
+  questionItems.forEach((item) => {
     const questionHeader = item.querySelector('.question-header');
     const questionTitleElement = questionHeader?.querySelector('.question-title');
 
     if (questionTitleElement) {
-      questionTitleElement.textContent = `${index + 1}. ${questionTitleElement.textContent}`;
+      questionTitleElement.textContent = `${questionTitleElement.textContent}`;
     } else {
       console.error('Invalid question item structure:', item);
     }
