@@ -29,6 +29,22 @@ document.querySelectorAll('input[name="question-type"]').forEach((radio) => {
   radio.addEventListener('change', editAnswerOptions);
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const currentUrl = window.location.href;
+
+  const url = new URL(currentUrl);
+
+  const op = url.searchParams.get('operation');
+  const id = url.searchParams.get('id');
+  if (op == 'edit' && id) {
+    loadQuiz();
+  }
+})
+
+function loadQuiz(id) {
+  fetch(`http://localhost:3000/api/quiz/single?id=${id}`)
+}
+
 // Function to close the popup and clear the form
 function closePopup() {
   questionPopup.classList.remove('active');
@@ -193,14 +209,18 @@ function saveQuestion() {
   clearForm();
 }
 
-
-
 // Function to renumber questions
 function renumberQuestions() {
   const questionItems = document.querySelectorAll('.question-item');
   questionItems.forEach((item, index) => {
-    const questionNumberElement = item.querySelector('.question-header p strong');
-    questionNumberElement.textContent = `${index + 1}. ${item.querySelector('.question-header').textContent.includes('True/False') ? 'True/False' : 'Multiple Choice'} Question`;
+    const questionHeader = item.querySelector('.question-header');
+    const questionTitleElement = questionHeader?.querySelector('.question-title');
+
+    if (questionTitleElement) {
+      questionTitleElement.textContent = `${index + 1}. ${questionTitleElement.textContent}`;
+    } else {
+      console.error('Invalid question item structure:', item);
+    }
   });
 }
 
