@@ -1,4 +1,5 @@
 const addQuestionButton = document.getElementById('add-question');
+const saveQuizButton = document.getElementById('save-quiz');
 const questionPopup = document.getElementById('question-popup');
 const overlay = document.getElementById('overlay');
 const closePopupButton = document.getElementById('close-popup');
@@ -9,17 +10,6 @@ const timeLimitError = document.getElementById('time-limit-error');
 const answerList = document.getElementById('answer-list');
 const questionTextInput = document.getElementById('question-text');
 
-const quizData = {
-  name: '',
-  questions: []
-};
-
-// Get quiz name input
-const quizNameInput = document.getElementById('quiz-name');
-quizNameInput.addEventListener('input', () => {
-  quizData.name = quizNameInput.value.trim();
-});
-
 // Show popup for adding a question
 addQuestionButton.addEventListener('click', () => {
   questionPopup.classList.add('active');
@@ -27,6 +17,12 @@ addQuestionButton.addEventListener('click', () => {
   timeLimitError.textContent = ''; // Clear any previous error messages
   validateInputs(); 
 });
+
+// Function to save question
+saveQuestionButton.addEventListener('click', saveQuestion);
+
+// Function to save quiz
+saveQuizButton.addEventListener('click', saveQuiz);
 
 // Close popup
 overlay.addEventListener('click', closePopup);
@@ -39,6 +35,78 @@ questionTextInput.addEventListener('input', validateInputs); // Validate on ques
 document.querySelectorAll('input[name="question-type"]').forEach((radio) => {
   radio.addEventListener('change', editAnswerOptions);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const currentUrl = window.location.href;
+
+  const url = new URL(currentUrl);
+
+  const op = url.searchParams.get('operation');
+  const id = url.searchParams.get('id');
+  if (op == 'edit' && id) {
+    loadQuiz();
+  }
+})
+
+function loadQuiz(quizData) {
+
+}
+
+
+function saveQuiz() {
+  const quizName = document.getElementById('quiz-name').value.trim();
+  if (!quizName) {
+    alert('Quiz name cannot be empty.');
+    return;
+  }
+
+  const questions = [];
+  const questionItems = document.querySelectorAll('.question-item');
+
+  questionItems.forEach((item, index) => {
+    const questionText = item.querySelector('.question-title').textContent.trim();
+    const timeLimitText = item.querySelector('.time-limit').textContent;
+    const timeLimit = parseInt(timeLimitText.replace('Time Limit: ', '').replace('s', ''));
+
+    const options = [];
+    const answerContainer = item.querySelector('.answer-container');
+    const optionElements = answerContainer.querySelectorAll('.answer-item');
+
+    let correctAnswer = -1;
+    optionElements.forEach((optionElement, optionIndex) => {
+      const optionText = optionElement.textContent.replace(' (Correct)', '').trim();
+      if (optionElement.textContent.includes('(Correct)')) {
+        correctAnswer = optionIndex;
+      }
+      options.push(optionText);
+    });
+
+    const type = options.length === 2 ? 'single' : 'multiple';
+
+    const question = {
+      id: index + 1,
+      type,
+      question: questionText,
+      options,
+      answer: correctAnswer,
+      timeLimit,
+    };
+
+    questions.push(question);
+  });
+
+  const quiz = {
+    id: '',
+    name: quizName,
+    questions,
+  };
+
+  console.log('Quiz saved:', quiz);
+
+  // Optionally, send the quiz JSON to a server or download it
+  alert('Quiz saved successfully!');
+}
+
 
 // Function to close the popup and clear the form
 function closePopup() {
@@ -120,17 +188,13 @@ function editAnswerOptions() {
   validateInputs();
 }
 
-// Function to save question
-saveQuestionButton.addEventListener('click', saveQuestion); // Ensure button click triggers save
-
 function saveQuestion() {
-  console.log('Attempting to save question...'); // Debug log
   const questionText = questionTextInput.value.trim();
   const questionType = document.querySelector('input[name="question-type"]:checked')?.value;
   const timeLimit = parseInt(timeLimitInput.value);
 
   if (!questionText || !questionType || isNaN(timeLimit)) {
-    console.error('Missing required fields'); // Log error if fields are missing
+    console.error('Missing required fields');
     return;
   }
 
@@ -153,34 +217,60 @@ function saveQuestion() {
   };
   quizData.questions.push(questionData);
 
-  // Create a question item for the list
-  const questionItem = document.createElement('li');
-  questionItem.classList.add('question-item');
+  // Use the question template
+  const template = document.getElementById('question-template');
+  const questionItem = template.content.cloneNode(true);
 
-  questionItem.innerHTML = `
-    <div class="question-header">
-      <p><strong></strong></p> <!-- Placeholder for dynamic numbering -->
-      <p><em>Time Limit: ${timeLimit}s</em></p>
-      <p>${questionText}</p>
-    </div>
-    <div class="answer-container">
-      ${answers.map(answer => `<p class="answer-item">${answer} ${answer === correctAnswer ? '(Correct)' : ''}</p>`).join('')}
-    </div>
-  `;
-  
-  const deleteButton = document.createElement('button');
-  deleteButton.classList.add('delete-button');
-  deleteButton.textContent = 'Delete';
-  deleteButton.onclick = () => {
-    questionItem.remove();
-    renumberQuestions(); // Renumber questions after deletion
+  // Fill the template with question data
+  questionItem.querySelector('.question-title').textContent = `${questionText}`;
+  questionItem.querySelector('.time-limit').textContent = `Time Limit: ${timeLimit}s`;
+
+  const answerContainer = questionItem.querySelector('.answer-container');
+  answers.forEach((answer) => {
+    const answerElement = document.createElement('p');
+    answerElement.classList.add('answer-item');
+    answerElement.textContent = `${answer}${answer === correctAnswer ? ' (Correct)' : ''}`;
+    answerContainer.appendChild(answerElement);
+  });
+
+  // Add event listeners for edit and delete buttons
+  const editButton = questionItem.querySelector('.edit-button');
+  const deleteButton = questionItem.querySelector('.delete-button');
+
+  editButton.onclick = () => {
+    // Set editing state
+    editingItem = editButton.closest('.question-item');
+    questionPopup.classList.add('active');
+    overlay.classList.add('active');
+
+    // Populate form with current question data
+    timeLimitInput.value = timeLimit;
+    questionTextInput.value = questionText;
+    document.querySelector(`input[value="${questionType}"]`).checked = true;
+    editAnswerOptions();
+    answerList.querySelectorAll('li').forEach((li, index) => {
+      li.querySelector('input[type="text"]').value = answers[index];
+      li.querySelector('input[type="radio"]').checked = answers[index] === correctAnswer;
+    });
+    validateInputs();
   };
 
-  questionItem.appendChild(deleteButton);
-  questionList.appendChild(questionItem);
+  deleteButton.onclick = () => {
+    const itemToDelete = deleteButton.closest('.question-item');
+    itemToDelete.remove();
+    renumberQuestions();
+  };
 
-  console.log('Question saved successfully.'); // Confirm save success
-  renumberQuestions(); // Renumber questions after adding a new one
+  // Append or replace the question item
+  if (editingItem) {
+    questionList.replaceChild(questionItem, editingItem);
+    editingItem = null; // Clear editing state
+  } else {
+    questionList.appendChild(questionItem);
+  }
+
+  closePopup();
+  renumberQuestions();
   clearForm();
 }
 
@@ -201,8 +291,7 @@ function renumberQuestions() {
   const questionItems = document.querySelectorAll('.question-item');
   questionItems.forEach((item, index) => {
     const questionNumberElement = item.querySelector('.question-header p strong');
-    const questionTypeText = item.querySelector('.question-header').textContent.includes('True/False') ? 'True/False' : 'Multiple Choice';
-    questionNumberElement.textContent = `${index + 1}. ${questionTypeText} Question`;
+    questionNumberElement.textContent = `${index + 1}. ${item.querySelector('.question-header').textContent.includes('True/False') ? 'True/False' : 'Multiple Choice'} Question`;
   });
 }
 
