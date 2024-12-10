@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
-export function getParticipants(req: Request, res: Response) {
-    // const playerDatabase: PlayerDatabase = getPlayerDatabase();
-    // const players: string[] | undefined = playerDatabase.getPlayersForSession(req.query.sessionId);
+import { getPlayerDatabase } from "../database";
 
-    // if (players) {
-    //     res.json({ players });
-    // }
-    // else {
-    //     res.status(404).send(`Game not found with id: ${req.query.sessionId}`);
-    // }
-    res.json(["kevin", "selena", "jiejie", "xiaocong"]);
+export function getParticipants(req: Request, res: Response) {
+    const playerDatabase = getPlayerDatabase();
+    const sessionId: number = parseInt(req.query.sessionId as string);
+    playerDatabase.getPlayersForSession(sessionId).then((players) => {
+        if (players) {
+            res.json(players);
+        } else {
+            res.status(404).send(`Game not found with id: ${req.query.sessionId}`);
+        }
+    });
 }
