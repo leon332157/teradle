@@ -2,13 +2,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('joinGameForm');
     form.addEventListener('submit', function (event) {
         event.preventDefault();
-        const pin = document.getElementById('gamePin').value;
+        const sessionId = document.getElementById('sessionId').value;
         const userName = document.getElementById('userName').value;
 
-        fetch(`/api/join?sessionId=${pin}`, {
+        fetch(`/api/session/join?sessionId=${sessionId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pin, userName })
+            body: JSON.stringify({ sessionId:sessionId, userName:userName })
         })
             .then(response => {
                 if (!response.ok) {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         localStorage.setItem('username', userName);
                         const status = document.getElementById('status');
                         status.innerHTML = 'Waiting for the game to start...';
-                        checkIfStarted(pin);
+                        checkIfStarted(sessionId);
                     })
                 }
             })

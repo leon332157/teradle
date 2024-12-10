@@ -5,7 +5,7 @@ import cors from 'cors';
 import { ApiRouter } from './api/router';
 const app = express();
 app.use(cors())
-const port = 8000;
+
 
 // add json body parser
 app.use(express.json());
@@ -46,11 +46,11 @@ frontendRouter.post('/next-question', (req, res) => {
 })
 
 frontendRouter.get('/in-game/instructor', (req, res) => {
-  res.sendFile(join(dirname(__filename), '..', 'quiz-list.html'));
+  res.sendFile(join(dirname(__filename), '..', 'in-game.html'));
 });
 
 frontendRouter.get('/in-game/', (req, res) => {
-
+  res.sendFile(join(dirname(__filename), '..', 'in-game.html'));
 });
 
 frontendRouter.get('/leaderboard', (req, res) => {
@@ -64,7 +64,7 @@ app.use(express.static(join(dirname(__filename), '..')));
 app.on('error', (err) => {
   console.error(err);
 });
-
+const port = 80;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

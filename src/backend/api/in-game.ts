@@ -64,11 +64,13 @@ export function getSession(req: Request, res: Response) {
 export function nextQuestion(req: Request, res: Response) {
   const sessionId = parseInt(req.query.sessionId as string);
   const gameController = getGameController();
-  gameController.nextQuestion(sessionId).then((success) => {
-    if (success) {
-      res.send("Next question");
+  gameController.nextQuestion(sessionId).then((resp: { status: boolean, message: string }) => {
+    if (resp.status) {
+      res.status(200).json({ message: resp.message });
+    } else if (resp.message === "No more questions") {
+      res.status(204).send(resp.message);
     } else {
-      res.status(404).send("Session not found");
+      res.status(404).send(resp.message);
     }
   });
 }
@@ -81,12 +83,14 @@ export function nextQuestion(req: Request, res: Response) {
 export function currentQuestion(req: Request, res: Response) {
   const sessionId = parseInt(req.query.sessionId as string);
   const gameController = getGameController();
-  const question = gameController.getCurrentQuestion(sessionId);
-  if (question) {
-    res.json(question);
-  } else {
-    res.status(404).send("Session not found");
+  gameController.getCurrentQuestion(sessionId).then((question) => {
+    if (question) {
+      res.json(question);
+    } else {
+      res.status(404).send("Session not found");
+    }
   }
+  );
 }
 
 /**

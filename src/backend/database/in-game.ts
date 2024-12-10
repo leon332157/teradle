@@ -2,6 +2,7 @@ import { Question, Quiz, QuizDatabase, } from './quiz';
 import { getPlayerDatabase, getQuizDatabase, getSessionDatabase } from '.';
 import { SessionDatabase } from './session';
 import { Player } from './player';
+import { currentQuestion } from '../api/in-game';
 
 
 export type Game = {
@@ -124,21 +125,34 @@ export class GameController {
    * @param {number} sessionId - the id of the session
    * @returns Question - the next question or undefined if not found
    */
-  async nextQuestion(sessionId: number): Promise<boolean> {
+  async nextQuestion(sessionId: number): Promise<{ status: boolean, message: string }> {
     const sessionDatabase: SessionDatabase = getSessionDatabase();
-    return await sessionDatabase.incrementCurrentQuestion(sessionId);
+    const quizDatabase: QuizDatabase = getQuizDatabase();
+    const currentQuestion = await sessionDatabase.getCurrentQuestionNumber(sessionId);
+    const quizID = await sessionDatabase.getQuizId(sessionId);
+    const thisQuiz = await quizDatabase.getQuiz(quizID);
+    if (currentQuestion >= thisQuiz.questions.length - 1) {
+      return { status: false, message: "No more questions" };
+    }
+    const resp = await sessionDatabase.incrementCurrentQuestion(sessionId);
+    if (resp) {
+      return { status: true, message: "Success" };
+    } else {
+      return { status: false, message: "Failed to increment question" };
+    }
   }
 
   /**
    * Check if the player page should go to the next question
    * @param {number} sessionId - the id of the session
    */
-  async shouldGoNext(sessionId: number, currentQuestion:number): Promise<boolean> {
+  async shouldGoNext(sessionId: number, currentQuestion: number): Promise<boolean> {
     if (currentQuestion === -1) {
       return false;
     }
     const sessionDatabase: SessionDatabase = getSessionDatabase();
     const sessionQuestionNum = await sessionDatabase.getCurrentQuestionNumber(sessionId);
+    console.log(`Session Question Num: ${sessionQuestionNum}, Current Question: ${currentQuestion}`);
     return sessionQuestionNum > currentQuestion;
   }
 
@@ -154,7 +168,8 @@ export class GameController {
     const quizDatabase = getQuizDatabase();
     const sessionDatabase = getSessionDatabase();
     const quizID = await sessionDatabase.getQuizId(sessionId);
-    const question = await quizDatabase.getQuestion(quizID, answer.questionIndex);
+    const currentQuestion = await sessionDatabase.getCurrentQuestionNumber(sessionId);
+    const question = await quizDatabase.getQuestion(quizID, currentQuestion);
     const isCorrect = question.answer === answer.index;
     if (isCorrect) {
       await playerDatabase.increasePlayerScore(sessionId, answer.PlayerName, (question.timeLimit - answer.time) * 100);

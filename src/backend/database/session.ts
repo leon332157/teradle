@@ -10,7 +10,7 @@ export type Session = {
 // Initialize a new Sequelize instance with SQLite
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: join(__dirname, '..', '..', '..','database', 'session.db')
+  storage: join(__dirname, '..', '..', '..', 'database', 'session.db')
 });
 
 class SessionModel extends Model<InferAttributes<SessionModel>, InferCreationAttributes<SessionModel>> {
@@ -69,7 +69,7 @@ export class SessionDatabase {
   async createSession(quizId: number): Promise<number> {
     const sessionId = Math.floor(Math.random() * 1000000);
     const newSessionSql = SessionModel.build({
-      id:sessionId,
+      id: sessionId,
       quizId: quizId,
       currentQuestion: -1 // -1 means the session has not started yet
     });
@@ -109,18 +109,24 @@ export class SessionDatabase {
   */
   async getCurrentQuestionNumber(id: number): Promise<number> {
     const currentQuestion: number = await SessionModel.findOne({
-     attributes: ['currentQuestion'],
+      attributes: ['currentQuestion'],
       where: {
         id: id
       }
     }).then(
-      (session: SessionModel | null) => session?.currentQuestion ?? -1
-    ).catch(
-      (reason: any) => {
-        console.log(reason);
-        return -1;
-      }
-    );
+      (session) => {
+        if (session === null) {
+          console.error("[Session Database][Get Curr question num] Session not found");
+          return -1;
+        } else {
+          return session.currentQuestion
+        }
+      }).catch(
+        (reason: any) => {
+          console.log(reason);
+          return -1;
+        }
+      );
 
     return currentQuestion;
   }
@@ -145,7 +151,7 @@ export class SessionDatabase {
   * @param {number} id the id of the quiz
   * @return true if successful, false otherwise
   */
- async deleteSession(id: number): Promise<boolean> {
+  async deleteSession(id: number): Promise<boolean> {
     return await SessionModel.destroy({
       where: {
         id: id

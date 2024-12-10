@@ -1,11 +1,45 @@
+import { clear } from "console";
+
 /*
 Question information such as time remaining, question number, and question text should be fetched into localstorage
 username should be stored cookie
 
 */
-import { Answer } from "../backend/database/in-game";
-import { Question } from "../backend/database/quiz";
-import { Game } from "../backend/database/in-game";
+type Player = {
+    sessionId: number; // the id of the session
+    name: string; // the name of the player
+    score: number; // the score of the player
+}
+
+type Game = {
+    sessionId: number; // the unique session id
+    participants: Player[]; // list of participants
+    questions: Question[]; // list of questions loaded from quiz database
+    currentQuestion: number; // index of the current question
+    isStarted: boolean; //flag to indicate if the game has started
+}
+
+type Answer = {
+    questionIndex: number; // the index of the question
+    index: number; // the index of the answer
+    time: number; // the time taken to answer
+    PlayerName: string; // the name of the player
+}
+
+type Question = {
+    id: number;
+    type: "multiple" | "single"; // multiple: multiple choice, single: single choice
+    question: string; // the question text
+    options: string[]; // list of options
+    answer: number; // index of the correct answer
+    timeLimit: number; // time limit in seconds
+}
+
+type Quiz = {
+    id: number; // unique id of the quiz
+    name: string; // name of the quiz 
+    questions: Question[]; // list of questions
+}
 
 document.addEventListener('DOMContentLoaded', initPage);
 
@@ -17,26 +51,31 @@ const timerElem = document.getElementById('nav-timer');
 const isInstructor = window.location.href.includes('/instructor');
 const pageURL = new URL(window.location.href);
 const sessionId = pageURL.searchParams.get('sessionId');
-let timerEvent: number;
+let timerEvent: number = -1;
+let checkNextEvent:number = -1;
 let timeLeft: number = -1;
 
-function fetchQuestion() {
+async function fetchQuestion() {
     // TODO: fetch question information
     // store in localstorage
     const sessionId = pageURL.searchParams.get('sessionId');
-    fetch(`/api/session/currentQuestion?sessionId=${sessionId}`).then((response) => {
+    const question = await fetch(`/api/session/currentQuestion?sessionId=${sessionId}`).then((response) => {
         if (response.ok) {
-            window.localStorage.setItem('question', JSON.stringify(response.json()));
+            return response.json();
         } else {
-            window.localStorage.setItem('question', JSON.stringify(null));
             console.error('Failed to fetch question', response);
             alert('Failed to fetch question');
         }
-    });
+    }
+    );
+    window.localStorage.setItem('question', JSON.stringify(question));
+    renderQuestion(question);
+    return question;
 }
 
 function renderQuestion(questionObj: Question) {
     questionTitleElem!.innerText = questionObj.question;
+    answerBtnListElem!.innerHTML = '';
     if (!isInstructor) { // only render answer buttons for players
         const buttonColors = ['#007BFF', '#28A745', '#DC3545', '#FFC107'];
         for (let i = 0; i < questionObj.options.length; i++) {
@@ -60,19 +99,28 @@ function disableAllButtons() {
 
 function timeUp() {
     alert('Time is up!');
+    postAnswer({
+        questionIndex: JSON.parse(window.localStorage.getItem('question')!).id,
+        index: -1,
+        time: 0,
+        PlayerName: window.localStorage.getItem('username')!
+    });
     disableAllButtons();
     clearInterval(timerEvent);
     endQuestion();
 }
 
 
-function initPage() {
+async function initPage() {
     //const timeInit = localStorage.getItem('timeInit');
-    fetchQuestion();
-    let currQuestion = JSON.parse(window.localStorage.getItem('question')!) as Question;
-    if (currQuestion !== null) {
-        renderQuestion(currQuestion);
+    if (timerEvent !== -1) {
+        clearInterval(timerEvent);
     }
+    if (checkNextEvent !== -1) {
+        clearInterval(checkNextEvent);
+    }
+    let currQuestion = await fetchQuestion()
+    //JSON.parse(window.localStorage.getItem('question')!) as Question;
     timeLeft = currQuestion.timeLimit;
     if (timerElem == null) {
         console.error('Timer element not found');
@@ -105,7 +153,11 @@ function handleButtonClick(event: Event) {
         time: timeLeft,
         PlayerName: userName
     };
-    fetch('/api/session/answer', {
+    postAnswer(answerObj);
+}
+
+function postAnswer(answerObj: Answer) {
+    fetch("/api/session/answer?sessionId="+sessionId, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -126,26 +178,25 @@ function handleButtonClick(event: Event) {
     );
 }
 
-
-
 function endQuestion() {
     if (isInstructor) {
         // TODO: redirect to leaderboard
-        window.location.href = `/instructor/leaderboard?sessionId=${sessionId}`;
+        window.location.href = `/leaderboard?sessionId=${sessionId}`;
     } else {
         // TODO: render correct answer
         const currQuestion = JSON.parse(window.localStorage.getItem('question')!) as Question;
         const answer: { isCorrect: boolean, correctIdx: number, correctAnswer: string } = JSON.parse(window.localStorage.getItem('answer')!);
         questionTitleElem!.innerText = `The correct answer is ${answer.correctAnswer}, you ${answer.isCorrect ? 'got it right!' : 'got it wrong!'}`;
-        setInterval(() => {
-            fetch(`/api/session/shouldGoNext?sessionID={sessionID}&currentQuestion={currQuestion.id}`, {
+        checkNextEvent = window.setInterval(() => {
+            fetch(`/api/session/shouldGoNext?sessionId=${sessionId}&currentQuestion=${currQuestion.id}`, {
                 method: 'POST',
             }).then((response) => {
                 if (response.status === 302) {
+                    clearInterval(checkNextEvent);
                     initPage();
                 }
             })
-        }, 100);
+        }, 10);
     }
 }
 
