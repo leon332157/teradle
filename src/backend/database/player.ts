@@ -101,11 +101,8 @@ export class PlayerDatabase {
         where: { sessionId },
       });
       return players.map(player => player.name);
-    } catch (error) {
-      (reason: any) => {
-        console.error(reason);
-        return [];
-      }
+    } catch (e) {
+      console.error(e)
     };
   }
 
