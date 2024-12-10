@@ -73,16 +73,20 @@ export class QuizDatabase {
       return false;
     }
   }
+    /*
+    * Get a quiz by its id
+    * @param id the id of the quiz
+    * @returns the quiz with the given id, null if not found
+    */
+    async getQuiz(id: number): Promise<Quiz> {
+        const res = await QuizModel.findByPk(id);
+        return res as Quiz;
+    }
 
-  /*
-  * Get a quiz by its id
-  * @param id the id of the quiz
-  * @returns the quiz with the given id, null if not found
-  */
-  async getQuiz(id: number): Promise<Quiz> {
-    const res = await QuizModel.findByPk(id);
-    return res as Quiz;
-  }
+    async getAllQuizzes(id: number): Promise<Quiz[]> {
+        const res = await QuizModel.findAll();
+        return res as Quiz[];
+    }
 
   async getQuestion(quizId: number, questionNumber: number): Promise<Question> {
     return await QuizModel.findOne({

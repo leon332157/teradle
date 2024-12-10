@@ -5,15 +5,35 @@ import { Request, Response } from "express";
     * This function sends a single quiz as json item, if the quiz is not found, it sends a 404
     * IT expects a quiz id in the request parameters, "api/quiz/single?id=<id>"
 */
-export async function getSingleQuiz(req:Request, res:Response) {
+export function getSingleQuiz(req:Request, res:Response) {
     const quizDatabase = getQuizDatabase();
     console.log(parseInt(req.query.quizId as string));
-    const quiz = await quizDatabase.getQuiz(parseInt(req.query.quizId as string));
-    if (quiz) {
-        res.json(quiz);
-    } else {
-        res.status(404).send('Quiz not found');
+    const quiz = quizDatabase.getQuiz(parseInt(req.query.quizId as string)).then(data => {
+        console.log("Quiz returned: ", data);
+        if (data) {
+            res.json(data);
+        } else {
+            res.status(404).send('Quiz not found');
+        }
     }
+    )
+    .catch((reason) => {
+        console.log(reason);
+        res.status(500).send('Error occured'+reason);
+    });
+}
+
+export function getAllQuizzes(req:Request, res:Response) {
+    const quizDatabase = getQuizDatabase();
+    quizDatabase.getAllQuizzes(parseInt(req.query.id as string))
+    .then(data => {
+        console.log("Quiz returned: ", data);
+        if (data) {
+            res.json(data);
+        } else {
+            res.status(404).send('Quiz not found');
+        }
+    });
 }
 
 /**
