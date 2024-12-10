@@ -151,10 +151,29 @@
                 }
             }, 2000);
         }
-        function startQuiz(){ /* redirect to questions once starting quiz */
+        /*function startQuiz(){ /* redirect to questions once starting quiz
             const pin = document.getElementById('pinDisplay').textContent;
             window.location.href = `/questions?pin=${pin}`;
+        }*/
+
+        //added to handle the start quiz button if the session
+        async function startQuiz() {
+            const pin = document.getElementById('pinDisplay').textContent;
+            try {
+                const response = await fetch(`/api/session/${pin}/start`, {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    window.location.href = `/questions?pin=${pin}`;
+                } else {
+                    alert('Failed to start the quiz.');
+                }
+            } catch (error) {
+                console.error('Error starting the quiz:', error);
+                alert('Failed to start the quiz.');
+            }
         }
+      
         async function init (){
             const quizList = document.getElementById('quizList');
 

@@ -2,7 +2,7 @@ import { join } from 'path';
 import { Sequelize, DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from "sequelize";
 
 export type Player = {
-  sessionId: number; // unique id of the quiz
+  sessionId: number; // unique id of the session
   name: string;
   score: number;
 }
