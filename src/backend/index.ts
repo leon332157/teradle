@@ -46,11 +46,11 @@ frontendRouter.post('/next-question', (req, res) => {
 })
 
 frontendRouter.get('/in-game/instructor', (req, res) => {
-  res.sendFile(join(dirname(__filename), '..', 'in-game.html'));
+  res.sendFile(join(dirname(__filename), '..', 'quiz-list.html'));
 });
 
-frontendRouter.get('/in-game/', (req, res) => {
-  res.sendFile(join(dirname(__filename), '..', 'in-game.html')); 
+frontendRouter.get('/in-game/student/', (req, res) => {
+
 });
 
 frontendRouter.get('/leaderboard', (req, res) => {
