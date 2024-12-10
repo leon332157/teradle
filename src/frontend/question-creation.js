@@ -87,6 +87,7 @@ async function loadQuiz(quizID) {
     .catch ((e) =>{
       console.error('Failed to load quiz:', e);
       alert('Error: Could not load quiz. Please try again later.');
+      window.location.href = '/create-quiz';
     });
 }
 
