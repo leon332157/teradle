@@ -1,9 +1,8 @@
 import express from "express";
 
 import { getTest } from "./test";
-
-import { getSession, createSession, addParticipant, nextQuestion, startGameSession } from "./in-game";
-import { getSingleQuiz, createQuiz, updateQuiz, getAllQuizzes} from "./quiz";
+import { getSingleQuiz, createQuiz, updateQuiz, deleteQuiz, getAllQuizzes} from "./quiz";
+import { getSession, createSession, addParticipant, nextQuestion } from "./in-game";
 import { getLeaderboard } from "./leaderboard-scoring";
 import {joinQuiz, checkSessionStarted} from "./join-quiz";
 
@@ -22,6 +21,8 @@ export class ApiRouter {
     this.router.get('/api/quiz/all', getAllQuizzes);
     this.router.post('/api/quiz/create', createQuiz);
     this.router.put(`/api/quiz/update`, updateQuiz);
+    this.router.delete(`/api/quiz/delete`, deleteQuiz);
+    this.router.get(`/api/quiz/getQuestion`, updateQuiz);
 
     // game routes
     this.router.get('/api/session', getSession)
