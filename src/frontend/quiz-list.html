@@ -176,9 +176,18 @@
         function editQuiz(){ /* redirect to edit quiz page with respective quizid */
             window.location.href = `/edit-quiz?id=${quizId}`
         }
-        function init(){
+        async function init(){
             const quizList = document.getElementById('quizList');
-
+            const resp= await fetch(`/api/quiz/all`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const data = await resp.json()
+            // data.push(data);
+            // console.log("Dummy quiz: ", dummyQuiz[0]); 
+            
             dummyQuiz.forEach(quiz => { /* in our case it would be for each api call */
                 const li = document.createElement('li');
                 li.className = 'quiz-item';
