@@ -113,7 +113,10 @@ function saveQuiz() {
   .then(response => response.json())
   .then(data => {
     console.log('Quiz saved:', data);
-    alert('Quiz saved successfully!');
+    const userConfirmed = confirm('Quiz saved successfully! Do you want to return to the main page?');
+    if (userConfirmed) {
+      window.location.href = "/";
+    }
   })
   .catch((error) => {
     console.error('Error saving quiz:', error);
@@ -142,7 +145,10 @@ function updateQuiz(quizID) {
   .then(response => response.json())
   .then(data => {
     console.log('Quiz updated:', data);
-    alert('Quiz updated successfully!');
+    const userConfirmed = confirm('Quiz updated successfully! Do you want to return to the main page?');
+    if (userConfirmed) {
+      window.location.href = "/";
+    }
   })
   .catch((error) => {
     console.error('Error updating quiz:', error);
