@@ -1,35 +1,36 @@
 import { Request, Response } from "express";
-import { getGameController } from "../database";
+import { getSessionDatabase, getPlayerDatabase } from "../database";
 
 export function joinQuiz(req: Request, res: Response) {
-    const pin = parseInt(req.body.pin);
-    const playerName = req.body.playerName;
-    const gameController = getGameController();
-    const session = gameController.getSession(pin);
-
-    if (!session) {
-        res.status(404).json({ error: 'Session not found' });
-        return;
-    }
-
-    if (session.isStarted) {
-        res.status(400).json({ error: 'Session already started' });
-    }
-
-    gameController.addParticipant(pin, playerName);
-
-    res.json({ message: 'Joined successfully' });
+    const sessionId = parseInt(req.body.sessionId);
+    const playerName = req.body.playerName as string;
+    const sessionDatabase = getSessionDatabase();
+    const playerDatabase = getPlayerDatabase();
+    sessionDatabase.doesSessionExist(sessionId).then((exists) => {
+        if (exists) {
+            playerDatabase.addPlayer(sessionId, playerName).then((success) => {
+                if (success) {
+                    res.status(200).json({ message: 'Joined successfully' });
+                } else {
+                    res.status(404).json({ message: 'Session not found' });
+                }
+            });
+        } else {
+            res.status(404).json({ message: 'Session not found' });
+        }
+    });
 }
 
 export function checkSessionStarted(req: Request, res: Response) {
-    const pin = parseInt(req.params.pin);
-    const gameController = getGameController();
-    const session = gameController.getSession(pin);
+    const sessionId = parseInt(req.params.sessionId);
 
-    if (!session) {
-        res.status(404).json({ error: 'Session not found' });
-        return;
+    const sessionDatabase = getSessionDatabase();
+    sessionDatabase.getCurrentQuestionNumber(sessionId).then((currentQuestion) => {
+        if (currentQuestion === -1) {
+            res.status(200).json({ started: false });
+        } else {
+            res.status(200).json({ started: true });
+        }
     }
-
-    res.json({ started: session.isStarted });
+    );
 }
