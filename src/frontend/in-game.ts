@@ -1,3 +1,5 @@
+import { clear } from "console";
+
 /*
 Question information such as time remaining, question number, and question text should be fetched into localstorage
 username should be stored cookie
@@ -49,31 +51,31 @@ const timerElem = document.getElementById('nav-timer');
 const isInstructor = window.location.href.includes('/instructor');
 const pageURL = new URL(window.location.href);
 const sessionId = pageURL.searchParams.get('sessionId');
-let timerEvent: number;
+let timerEvent: number = -1;
+let checkNextEvent:number = -1;
 let timeLeft: number = -1;
 
-function fetchQuestion() {
+async function fetchQuestion() {
     // TODO: fetch question information
     // store in localstorage
     const sessionId = pageURL.searchParams.get('sessionId');
-    fetch(`/api/session/currentQuestion?sessionId=${sessionId}`).then((response) => {
+    const question = await fetch(`/api/session/currentQuestion?sessionId=${sessionId}`).then((response) => {
         if (response.ok) {
-            response.json().then(
-                (data) => {
-                    window.localStorage.setItem('question', JSON.stringify(data));
-                    renderQuestion(data as Question);
-                }
-            )
+            return response.json();
         } else {
-            window.localStorage.setItem('question', JSON.stringify(null));
             console.error('Failed to fetch question', response);
             alert('Failed to fetch question');
         }
-    });
+    }
+    );
+    window.localStorage.setItem('question', JSON.stringify(question));
+    renderQuestion(question);
+    return question;
 }
 
 function renderQuestion(questionObj: Question) {
     questionTitleElem!.innerText = questionObj.question;
+    answerBtnListElem!.innerHTML = '';
     if (!isInstructor) { // only render answer buttons for players
         const buttonColors = ['#007BFF', '#28A745', '#DC3545', '#FFC107'];
         for (let i = 0; i < questionObj.options.length; i++) {
@@ -97,6 +99,12 @@ function disableAllButtons() {
 
 function timeUp() {
     alert('Time is up!');
+    postAnswer({
+        questionIndex: JSON.parse(window.localStorage.getItem('question')!).id,
+        index: -1,
+        time: 0,
+        PlayerName: window.localStorage.getItem('username')!
+    });
     disableAllButtons();
     clearInterval(timerEvent);
     endQuestion();
@@ -105,8 +113,14 @@ function timeUp() {
 
 async function initPage() {
     //const timeInit = localStorage.getItem('timeInit');
-    await fetchQuestion()
-    let currQuestion = JSON.parse(window.localStorage.getItem('question')!) as Question;
+    if (timerEvent !== -1) {
+        clearInterval(timerEvent);
+    }
+    if (checkNextEvent !== -1) {
+        clearInterval(checkNextEvent);
+    }
+    let currQuestion = await fetchQuestion()
+    //JSON.parse(window.localStorage.getItem('question')!) as Question;
     timeLeft = currQuestion.timeLimit;
     if (timerElem == null) {
         console.error('Timer element not found');
@@ -139,6 +153,10 @@ function handleButtonClick(event: Event) {
         time: timeLeft,
         PlayerName: userName
     };
+    postAnswer(answerObj);
+}
+
+function postAnswer(answerObj: Answer) {
     fetch("/api/session/answer?sessionId="+sessionId, {
         method: 'POST',
         headers: {
@@ -160,8 +178,6 @@ function handleButtonClick(event: Event) {
     );
 }
 
-
-
 function endQuestion() {
     if (isInstructor) {
         // TODO: redirect to leaderboard
@@ -171,15 +187,16 @@ function endQuestion() {
         const currQuestion = JSON.parse(window.localStorage.getItem('question')!) as Question;
         const answer: { isCorrect: boolean, correctIdx: number, correctAnswer: string } = JSON.parse(window.localStorage.getItem('answer')!);
         questionTitleElem!.innerText = `The correct answer is ${answer.correctAnswer}, you ${answer.isCorrect ? 'got it right!' : 'got it wrong!'}`;
-        setInterval(() => {
-            fetch(`/api/session/shouldGoNext?sessionID={sessionID}&currentQuestion={currQuestion.id}`, {
+        checkNextEvent = window.setInterval(() => {
+            fetch(`/api/session/shouldGoNext?sessionId=${sessionId}&currentQuestion=${currQuestion.id}`, {
                 method: 'POST',
             }).then((response) => {
                 if (response.status === 302) {
+                    clearInterval(checkNextEvent);
                     initPage();
                 }
             })
-        }, 100);
+        }, 10);
     }
 }
 

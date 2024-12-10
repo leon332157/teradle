@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const playerCount = document.getElementById('player-count');
             const players = await getSessionPlayers();
             updatePlayerList(players, playerList, playerCount);
-        }, 2000);
+        }, 1000);
 
     const startButton = document.getElementById('start-button');
     if (startButton) {

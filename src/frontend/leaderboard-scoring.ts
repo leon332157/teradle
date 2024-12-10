@@ -25,9 +25,9 @@
         await fetch(`/api/session/next?sessionId=${sessionId}`, {
           method: 'POST'
         }).then((response) => {
-          if (response.redirected) {
-            window.location.href = response.url; // Redirect the browser to the new location
-          }
+          if (response.status == 200) window.location.href = "/in-game/instructor?sessionId=" + sessionId; // Redirect the browser to the new location
+          else if (response.status == 204) alert('No more questions');
+          else alert('Failed to move to the next question');
         });
       });
     }

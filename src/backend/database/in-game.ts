@@ -152,6 +152,7 @@ export class GameController {
     }
     const sessionDatabase: SessionDatabase = getSessionDatabase();
     const sessionQuestionNum = await sessionDatabase.getCurrentQuestionNumber(sessionId);
+    console.log(`Session Question Num: ${sessionQuestionNum}, Current Question: ${currentQuestion}`);
     return sessionQuestionNum > currentQuestion;
   }
 

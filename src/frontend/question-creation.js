@@ -284,11 +284,13 @@ function saveQuestion() {
   // Append or replace the question item
   if (editingItem && editingIndex >= 0) {
     questionList.replaceChild(questionItem, editingItem);
+    Question.id = editingIndex;
     Quiz.questions[editingIndex] = Question;
     editingItem = null;
     editingIndex = -1;
   } else {
     questionList.appendChild(questionItem);
+    Question.id = Quiz.questions.length;
     Quiz.questions.push(Question);
   }
 

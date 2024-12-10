@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         localStorage.setItem('username', userName);
                         const status = document.getElementById('status');
                         status.innerHTML = 'Waiting for the game to start...';
-                        checkIfStarted(pin);
+                        checkIfStarted(sessionId);
                     })
                 }
             })

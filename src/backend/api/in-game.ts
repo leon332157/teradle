@@ -83,7 +83,7 @@ export function nextQuestion(req: Request, res: Response) {
 export function currentQuestion(req: Request, res: Response) {
   const sessionId = parseInt(req.query.sessionId as string);
   const gameController = getGameController();
-  const question = gameController.getCurrentQuestion(sessionId).then((question) => {
+  gameController.getCurrentQuestion(sessionId).then((question) => {
     if (question) {
       res.json(question);
     } else {
