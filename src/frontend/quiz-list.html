@@ -127,9 +127,7 @@
     </div>
     <script>
         const dummyQuiz = [ /* for demo */ /* also api call */
-            { id: 1, name: "US History Quiz", createdBy: "Benjamin Franklin" },
-            { id: 2, name: "Unit 2 Biology", createdBy: "Charles Darwin" },
-            { id: 3, name: "Algebra 2 Quiz", createdBy: "Issac Newton" }
+
         ];
         function generatePin(){ /* strictly for demo */
             return Math.floor(100000 + Math.random() * 900000);
@@ -157,16 +155,25 @@
             const pin = document.getElementById('pinDisplay').textContent;
             window.location.href = `/questions?pin=${pin}`;
         }
-        function init(){
+        async function init (){
             const quizList = document.getElementById('quizList');
 
-            dummyQuiz.forEach(quiz => { /* in our case it would be for each api call */
+            const resp= await fetch(`/api/quiz/all`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const data = await resp.json()
+            // data.push(data);
+            // console.log("Dummy quiz: ", dummyQuiz[0]); 
+
+            data.forEach(quiz => { /* in our case it would be for each api call */
                 const li = document.createElement('li');
                 li.className = 'quiz-item';
                 li.innerHTML = `
                     <div class="quiz-details">
                         <h3>${quiz.name}</h3>
-                        <p>Created By: ${quiz.createdBy}</p>
                     </div> 
                     <button class="create-pin-btn" onclick="createSession(${quiz.id}, '${quiz.name}')">
                         Create PIN    
