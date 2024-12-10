@@ -32,7 +32,6 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@types/sequelize": "^4.28.20",
     "express": "^5.0",
     "sequelize": "^6.37.5",
     "sqlite3": "^5.1.7",
