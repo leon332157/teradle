@@ -49,7 +49,7 @@ frontendRouter.get('/in-game/instructor', (req, res) => {
   res.sendFile(join(dirname(__filename), '..', 'quiz-list.html'));
 });
 
-frontendRouter.get('/in-game/student/', (req, res) => {
+frontendRouter.get('/in-game/', (req, res) => {
 
 });
 

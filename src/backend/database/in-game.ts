@@ -130,13 +130,26 @@ export class GameController {
   }
 
   /**
+   * Check if the player page should go to the next question
+   * @param {number} sessionId - the id of the session
+   */
+  async shouldGoNext(sessionId: number, currentQuestion:number): Promise<boolean> {
+    if (currentQuestion === -1) {
+      return false;
+    }
+    const sessionDatabase: SessionDatabase = getSessionDatabase();
+    const sessionQuestionNum = await sessionDatabase.getCurrentQuestionNumber(sessionId);
+    return sessionQuestionNum > currentQuestion;
+  }
+
+  /**
    * Record the answer for a participant in the session and update score
    * @param {number} sessionId - the id of the session
    * @param {number} participantId - the id of the participant
    * @param {string} answer - the answer to record
    * @returns boolean - true if the answer was recorded, false otherwise
    */
-  async recordAnswer(sessionId: number, answer: Answer): Promise<{ isCorrect: boolean, correctIdx: number }> {
+  async recordAnswer(sessionId: number, answer: Answer): Promise<{ isCorrect: boolean, correctIdx: number, correctAnswer: string }> {
     const playerDatabase = getPlayerDatabase();
     const quizDatabase = getQuizDatabase();
     const sessionDatabase = getSessionDatabase();
@@ -146,6 +159,6 @@ export class GameController {
     if (isCorrect) {
       await playerDatabase.increasePlayerScore(sessionId, answer.PlayerName, (question.timeLimit - answer.time) * 100);
     }
-    return { isCorrect, correctIdx: question.answer };
+    return { isCorrect, correctIdx: question.answer, correctAnswer: question.options[question.answer] };
   }
 }

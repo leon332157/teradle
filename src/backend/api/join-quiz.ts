@@ -22,7 +22,7 @@ export function joinQuiz(req: Request, res: Response) {
 }
 
 export function checkSessionStarted(req: Request, res: Response) {
-    const sessionId = parseInt(req.params.sessionId);
+    const sessionId = parseInt(req.query.sessionId as string);
 
     const sessionDatabase = getSessionDatabase();
     sessionDatabase.getCurrentQuestionNumber(sessionId).then((currentQuestion) => {
