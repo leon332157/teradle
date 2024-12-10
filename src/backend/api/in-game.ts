@@ -8,7 +8,12 @@ import { Answer } from "../database/in-game";
 */
 export function createSession(req: Request, res: Response) {
   const quizId = parseInt(req.query.quizId as string);
+  if (!quizId) {
+    res.status(400).send("Quiz id is required");
+    return;
+  }
   const gameController = getGameController();
+  console.log("Creating session for quiz", quizId);
   gameController.createSession(quizId).then((code) => {
     if (code !== -1) {
       res.status(200).json({ message: 'Session created successfully', pin: code });
