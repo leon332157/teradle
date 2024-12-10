@@ -175,7 +175,8 @@
         function editQuiz(quizId){ /* redirect to edit quiz page with respective quizid */
             window.location.href = `/edit-quiz?id=${quizId}`
         }
-        async function init(){
+
+        async function init (){
             const quizList = document.getElementById('quizList');
             const resp= await fetch(`/api/quiz/all`, {
                 method: 'GET',

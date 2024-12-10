@@ -32,7 +32,7 @@ addQuestionButton.addEventListener('click', () => {
 saveQuestionButton.addEventListener('click', saveQuestion);
 
 // Function to save quiz
-saveQuizButton.addEventListener('click', () => isUpdating ? updateQuiz(pageQuizId) : saveQuiz);
+saveQuizButton.addEventListener('click', () => isUpdating ? updateQuiz(pageQuizId) : saveQuiz());
 
 // Close popup
 overlay.addEventListener('click', closePopup);
@@ -87,6 +87,7 @@ async function loadQuiz(quizID) {
     .catch ((e) =>{
       console.error('Failed to load quiz:', e);
       alert('Error: Could not load quiz. Please try again later.');
+      window.location.href = '/create-quiz';
     });
 }
 
