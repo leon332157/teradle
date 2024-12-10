@@ -3,19 +3,20 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         const pin = document.getElementById('gamePin').value;
-        const playerName = document.getElementById('playerName').value;
+        const userName = document.getElementById('userName').value;
 
         fetch(`/api/join?pin=${pin}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pin, playerName })
+            body: JSON.stringify({ pin, userName })
         })
         .then(response => response.json())
         .then(data => {
             if (data.error) {
                 alert(data.error);
             } else {
-                document.body.innerHTML = 'You have joined.';
+                localStorage.setItem('userName', userName);
+                document.body.innerHTML = '<p>You have joined. Waiting for the session to start...</p>';
                 checkIfStarted(pin);
             }
         })
