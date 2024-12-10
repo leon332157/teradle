@@ -148,7 +148,7 @@
 </head>
 <body>
     <div class="container"> 
-        <h1>List of Quizzes</h1>
+        <h1>Teradle Quizzes</h1>
         <div class="navigation">
             <button class="nav-btn" onclick="joinQuiz()">Join Quiz</button>
             <button class="nav-btn" onclick="createQuiz()">Create Quiz</button>
@@ -163,17 +163,16 @@
             { id: 2, name: "Unit 2 Biology", createdBy: "Charles Darwin" },
             { id: 3, name: "Algebra 2 Quiz", createdBy: "Issac Newton" }
         ];
-        function startQuiz(){ /* redirect to questions once starting quiz */
-            const pin = document.getElementById('pinDisplay').textContent;
-            window.location.href = `/questions?pin=${pin}`;
+        function startQuiz(quizID){ /* redirect to questions once starting quiz */
+            window.location.href = `/host-quiz?id=${quizID}`;
         }
         function joinQuiz(){ /* redirect to student join pin page page */
-            window.location.href = `/join-quiz?id=${quizId}`
+            window.location.href = `/join-quiz`
         }
         function createQuiz(){ /* create new quiz id?? */
-            window.location.href = `/create-quiz?id=${quizId}`
+            window.location.href = `/create-quiz`
         }
-        function editQuiz(){ /* redirect to edit quiz page with respective quizid */
+        function editQuiz(quizId){ /* redirect to edit quiz page with respective quizid */
             window.location.href = `/edit-quiz?id=${quizId}`
         }
         async function init(){
@@ -188,7 +187,7 @@
             // data.push(data);
             // console.log("Dummy quiz: ", dummyQuiz[0]); 
             
-            dummyQuiz.forEach(quiz => { /* in our case it would be for each api call */
+            data.forEach(quiz => { /* in our case it would be for each api call */
                 const li = document.createElement('li');
                 li.className = 'quiz-item';
                 li.innerHTML = `
@@ -196,7 +195,7 @@
                         <h3>${quiz.name}</h3>
                         <p>Created By: ${quiz.createdBy}</p>
                     </div> 
-                    <button class="host-quiz-btn" onclick="hostSession(${quiz.id}, '${quiz.name}')">
+                    <button class="host-quiz-btn" onclick="startQuiz(${quiz.id}, '${quiz.name}')">
                         Host Quiz    
                     </button>
                     <button class="edit-quiz-btn" onclick="editQuiz(${quiz.id}, '${quiz.name}')">
