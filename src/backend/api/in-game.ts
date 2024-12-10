@@ -81,12 +81,14 @@ export function nextQuestion(req: Request, res: Response) {
 export function currentQuestion(req: Request, res: Response) {
   const sessionId = parseInt(req.query.sessionId as string);
   const gameController = getGameController();
-  const question = gameController.getCurrentQuestion(sessionId);
-  if (question) {
-    res.json(question);
-  } else {
-    res.status(404).send("Session not found");
+  const question = gameController.getCurrentQuestion(sessionId).then((question) => {
+    if (question) {
+      res.json(question);
+    } else {
+      res.status(404).send("Session not found");
+    }
   }
+  );
 }
 
 /**

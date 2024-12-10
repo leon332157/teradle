@@ -3,9 +3,41 @@ Question information such as time remaining, question number, and question text 
 username should be stored cookie
 
 */
-import { Answer } from "../backend/database/in-game";
-import { Question } from "../backend/database/quiz";
-import { Game } from "../backend/database/in-game";
+type Player = {
+    sessionId: number; // the id of the session
+    name: string; // the name of the player
+    score: number; // the score of the player
+}
+
+type Game = {
+    sessionId: number; // the unique session id
+    participants: Player[]; // list of participants
+    questions: Question[]; // list of questions loaded from quiz database
+    currentQuestion: number; // index of the current question
+    isStarted: boolean; //flag to indicate if the game has started
+}
+
+type Answer = {
+    questionIndex: number; // the index of the question
+    index: number; // the index of the answer
+    time: number; // the time taken to answer
+    PlayerName: string; // the name of the player
+}
+
+type Question = {
+    id: number;
+    type: "multiple" | "single"; // multiple: multiple choice, single: single choice
+    question: string; // the question text
+    options: string[]; // list of options
+    answer: number; // index of the correct answer
+    timeLimit: number; // time limit in seconds
+}
+
+type Quiz = {
+    id: number; // unique id of the quiz
+    name: string; // name of the quiz 
+    questions: Question[]; // list of questions
+}
 
 document.addEventListener('DOMContentLoaded', initPage);
 
@@ -26,7 +58,12 @@ function fetchQuestion() {
     const sessionId = pageURL.searchParams.get('sessionId');
     fetch(`/api/session/currentQuestion?sessionId=${sessionId}`).then((response) => {
         if (response.ok) {
-            window.localStorage.setItem('question', JSON.stringify(response.json()));
+            response.json().then(
+                (data) => {
+                    window.localStorage.setItem('question', JSON.stringify(data));
+                    renderQuestion(data as Question);
+                }
+            )
         } else {
             window.localStorage.setItem('question', JSON.stringify(null));
             console.error('Failed to fetch question', response);
@@ -66,13 +103,10 @@ function timeUp() {
 }
 
 
-function initPage() {
+async function initPage() {
     //const timeInit = localStorage.getItem('timeInit');
-    fetchQuestion();
+    await fetchQuestion()
     let currQuestion = JSON.parse(window.localStorage.getItem('question')!) as Question;
-    if (currQuestion !== null) {
-        renderQuestion(currQuestion);
-    }
     timeLeft = currQuestion.timeLimit;
     if (timerElem == null) {
         console.error('Timer element not found');
@@ -131,7 +165,7 @@ function handleButtonClick(event: Event) {
 function endQuestion() {
     if (isInstructor) {
         // TODO: redirect to leaderboard
-        window.location.href = `/instructor/leaderboard?sessionId=${sessionId}`;
+        window.location.href = `/leaderboard?sessionId=${sessionId}`;
     } else {
         // TODO: render correct answer
         const currQuestion = JSON.parse(window.localStorage.getItem('question')!) as Question;
