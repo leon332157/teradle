@@ -157,7 +157,8 @@
             const pin = document.getElementById('pinDisplay').textContent;
             window.location.href = `/questions?pin=${pin}`;
         }*/
-        
+
+        //added to handle the start quiz button if the session
         async function startQuiz() {
             const pin = document.getElementById('pinDisplay').textContent;
             try {
