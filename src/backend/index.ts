@@ -25,7 +25,7 @@ frontendRouter.get('/create-quiz', (req, res) => {
   res.sendFile(join(dirname(__filename), '..', 'question-creation.html'));
 });
 
-frontendRouter.get('/edit-quiz/:id', (req, res) => {
+frontendRouter.get('/edit-quiz', (req, res) => {
   res.sendFile(join(dirname(__filename), '..', 'question-creation.html'));
 });
 
