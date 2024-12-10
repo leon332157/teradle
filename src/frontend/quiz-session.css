@@ -21,7 +21,7 @@ body {
     font-size: 28px;
     font-weight: bold;
     padding: 15px;
-    background-color: #34495e;
+    background-color: green;
     color: white;
     width: 30%;
     margin: 50px auto 20px auto;
@@ -62,7 +62,7 @@ body {
 }
 
 .player {
-    background-color: #34495e;
+    background-color: green;
     color: white;
     border-radius: 8px;
     padding: 8px 12px;
@@ -75,7 +75,7 @@ body {
     top: 30px;
     right: 32px;
     padding: 8px 11px;
-    background-color: #34495e;
+    background-color: green;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     color: white;
@@ -91,5 +91,5 @@ body {
 }
 
 .start-button:hover {
-    background-color: #c0dbf7;
+    background-color: #FFFFCC;
 }
