@@ -14,5 +14,5 @@ export async function getParticipants(req: Request, res: Response) {
     else {
         res.status(404).send(`Game not found with id: ${req.query.sessionId}`);
     }
-    res.json(["kevin", "selena", "jiejie", "xiaocong"]);
+    //res.json(["kevin", "selena", "jiejie", "xiaocong"]);
 }
