@@ -16,8 +16,7 @@ export function joinQuiz(req: Request, res: Response) {
         res.status(400).json({ error: 'Session already started' });
     }
 
-    const participant = { id: Date.now(), name: playerName, score: 0 };
-    gameController.addParticipant(pin, participant);
+    gameController.addParticipant(pin, playerName);
 
     res.json({ message: 'Joined successfully' });
 }
