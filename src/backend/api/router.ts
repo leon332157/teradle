@@ -1,7 +1,7 @@
 import express from "express";
 
 import { getSingleQuiz, createQuiz, updateQuiz, getAllQuizzes, deleteQuiz } from "./quiz";
-import { getSession, createSession, nextQuestion, startGameSession } from "./in-game";
+import { getSession, createSession, nextQuestion, startGameSession, currentQuestion, recordAnswer, shouldGoNext } from "./in-game";
 import { getLeaderboard } from "./leaderboard-scoring";
 import { joinQuiz, checkSessionStarted } from "./join-quiz";
 import { getParticipants } from "./session";
@@ -30,7 +30,9 @@ export class ApiRouter {
     this.router.post('/api/session/start', startGameSession)
     this.router.post('/api/session/join', joinQuiz);
     this.router.post('/api/session/next', nextQuestion);
-
+    this.router.post('/api/session/shouldGoNext', shouldGoNext);
+    this.router.get('/api/session/currentQuestion', currentQuestion);
+    this.router.post('/api/session/answer', recordAnswer);
     // leaderboard routes
     this.router.get('/api/leaderboard-scoring/getLeaderboard', getLeaderboard);
   }
