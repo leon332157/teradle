@@ -5,13 +5,14 @@
     <div id="game">
         <nav>
             <ul class="nav-list">
-                <li class="nav-item">Timer: <span id="nav-timer"></span></li>
-                <li class="nav-item">Score: <span id="score">0</span></li>
-                <li class="nav-item">Username: <span id="username"></span></li>
+                <li class="nav-item" id="nav-item-0">Timer: <span id="nav-timer"></span></li>
+                <li class="nav-item" id = "nav-item-1">Score: <span id="score">0</span></li>
+                <li class="nav-item" id="nav-item-2">Username: <span id="username"></span></li>
             </ul>
         </nav>
         <h1 id="question-title">Question Title</h1>
-        <div class="answers" id="answer-btn-list">
+        <div class = 'answers-container'>
+            <div class="answers" id="answer-btn-list"></div>
         </div>
         <style>
             body {
@@ -23,7 +24,6 @@
 
             #game {
                 text-align: center;
-                padding: 20px;
             }
 
             h1 {
@@ -38,10 +38,11 @@
 
             .nav-list {
                 list-style-type: none;
+                width: 100%;
                 padding: 0;
                 display: flex;
                 justify-content: space-between;
-                background-color: #28a745;
+                background-color: #585858;
                 color: white;
             }
 
@@ -49,16 +50,22 @@
                 padding: 14px 20px;
             }
 
+            .answers-container {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+
             .answers {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(2, 1fr);
-                gap: 8px;
+                gap: 10px;
             }
 
             .answer {
-                padding: 25px 50px;
-                font-size: 1em;
+                padding: 40px 60px;
+                font-size: 2em;
                 cursor: pointer;
                 border: none;
                 border-radius: 5px;
