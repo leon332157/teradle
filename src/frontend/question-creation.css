@@ -7,6 +7,7 @@ body {
 }
 
 h1 {
+  text-align: center;
   color: #333;
   font-family: 'Roboto Mono', monospace;
   font-weight: 700;
@@ -54,11 +55,33 @@ button {
   padding: 10px;
 }
 
+button:hover {
+  background-color: #24873a;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end; 
+  gap: 10px; 
+  width: 100%;
+}
+
 /* Disabled Save Question button styling */
 #save-question:disabled {
   background-color: gray;
   color: lightgray;
   cursor: not-allowed;
+}
+
+#save-quiz {
+  width : 80px;
+}
+#delete-quiz {
+  width : 80px;
+  background-color: #ff4d4d; /* Red color for delete button */
+}
+#delete-quiz:hover {
+  background-color: #cc0000; /* Darker red on hover */
 }
 
 /* Popup styling */
