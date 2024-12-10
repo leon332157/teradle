@@ -31,59 +31,115 @@ body {
 
 .game-pin {
     position: absolute;
-    font-size: 20px;
-    top: 15px;
-    left: 25px;
-    padding: 8px 11px;
-    background-color: green;
+    font-size: 18px;
+    top: 20px;
+    left: 30px;
+    padding: 10px 15px;
+    background-color: #47b776;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     color: white;
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(71, 183, 118, 0.7);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
 }
 
 .session-details {
     text-align: center;
-    padding: 10px;
-    background-color: #ecf0f1;
-    border-radius: 8px;
-    width: 50%;
-    max-width: 950px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    width: 60%;
+    max-width: 900px;
     margin: 20px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
 }
 
 .player-count {
-    margin-bottom: 10px;
-    font-size: 18px;
+    margin-bottom: 15px;
+    font-size: 20px;
     font-weight: bold;
+    color: #34495e;
 }
 
 .player-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 10px;
+    gap: 15px;
     justify-content: center;
 }
 
 .player {
-    background-color: green;
+    background: green;
     color: white;
-    border-radius: 8px;
-    padding: 8px 12px;
+    border-radius: 10px;
+    padding: 10px 15px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    animation: pop-in 1s ease-out, bounce 2s infinite ease-in-out;
+}
+
+@keyframes pop-in {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+        background-color: #c3f7e2;
+    }
+
+    50% {
+        transform: scale(1.2) rotate(10deg);
+        opacity: 1;
+        background-color: #6fe3aa;
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+        background-color: #2e8b57;
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .start-button {
     position: fixed;
     top: 30px;
     right: 32px;
-    padding: 8px 11px;
+    padding: 10px 15px;
     background-color: green;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     color: white;
+    font-size: 16px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .start-button button {
@@ -96,4 +152,47 @@ body {
 
 .start-button:hover {
     background-color: #FFFFCC;
+    color: #fff;
+}
+
+footer {
+    text-align: center;
+    padding: 15px 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 16px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.waiting-message {
+    font-style: italic;
+    animation: blink 1.5s linear infinite;
+    color: #ecf0f1;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
