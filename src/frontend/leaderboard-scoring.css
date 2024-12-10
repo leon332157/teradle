@@ -1,6 +1,6 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #ff8aad;
+  background-color: #ffffff;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@ body {
   font-size: 50px;
   font-weight: bold;
   padding: 25px;
-  background-color: #87273d;
+  background-color: green;
   color: white;
   margin: 50px auto 2px auto;
   border-radius: 15px;
@@ -44,7 +44,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 25px;
-  background-color: #87273d;
+  background-color: #05ca36;
   color: white;
   border-radius: 8px;
   width: 100%;
@@ -69,7 +69,7 @@ body {
   top: 30px;
   right: 32px;
   padding: 8px 11px;
-  background-color: #87273d;
+  background-color: green;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   color: white;
@@ -86,5 +86,5 @@ body {
 }
 
 .next-button:hover {
-  background-color: #e9658d;
+  background-color: #FFFFCC;
 }
