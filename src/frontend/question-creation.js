@@ -32,7 +32,7 @@ addQuestionButton.addEventListener('click', () => {
 saveQuestionButton.addEventListener('click', saveQuestion);
 
 // Function to save quiz
-saveQuizButton.addEventListener('click', () => isUpdating ? updateQuiz(pageQuizId) : saveQuiz);
+saveQuizButton.addEventListener('click', () => isUpdating ? updateQuiz(pageQuizId) : saveQuiz());
 
 // Close popup
 overlay.addEventListener('click', closePopup);
