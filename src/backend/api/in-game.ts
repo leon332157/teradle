@@ -13,6 +13,17 @@ export function createSession(req: Request, res: Response) {
   }
 }
 
+export function startGameSession(req: Request, res: Response) {
+  const sessionId = parseInt(req.params.sessionId);
+  const gameController = getGameController();
+  const success = gameController.startSession(sessionId);
+  if (success) {
+      res.json({ message: 'Game session started successfully' });
+  } else {
+      res.status(404).json({ error: 'Session not found' });
+  }
+}
+
 export function getSession(req: Request, res: Response) {
   const sessionId = parseInt(req.params.sessionId);
   const gameController = getGameController();
