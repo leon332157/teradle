@@ -124,16 +124,28 @@ export class GameController {
    * @param {number} sessionId - the id of the session
    * @returns Question - the next question or undefined if not found
    */
-  async nextQuestion(sessionId: number): Promise<boolean> {
+  async nextQuestion(sessionId: number): Promise<{ status: boolean, message: string }> {
     const sessionDatabase: SessionDatabase = getSessionDatabase();
-    return await sessionDatabase.incrementCurrentQuestion(sessionId);
+    const quizDatabase: QuizDatabase = getQuizDatabase();
+    const currentQuestion = await sessionDatabase.getCurrentQuestionNumber(sessionId);
+    const quizID = await sessionDatabase.getQuizId(sessionId);
+    const thisQuiz = await quizDatabase.getQuiz(quizID);
+    if (currentQuestion >= thisQuiz.questions.length - 1) {
+      return { status: false, message: "No more questions" };
+    }
+    const resp = await sessionDatabase.incrementCurrentQuestion(sessionId);
+    if (resp) {
+      return { status: true, message: "Success" };
+    } else {
+      return { status: false, message: "Failed to increment question" };
+    }
   }
 
   /**
    * Check if the player page should go to the next question
    * @param {number} sessionId - the id of the session
    */
-  async shouldGoNext(sessionId: number, currentQuestion:number): Promise<boolean> {
+  async shouldGoNext(sessionId: number, currentQuestion: number): Promise<boolean> {
     if (currentQuestion === -1) {
       return false;
     }

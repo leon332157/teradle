@@ -22,7 +22,7 @@
 
       document.querySelector('.next-button')?.addEventListener('click', async () => {
         console.log('next');
-        await fetch(`/next-question?sessionId=${sessionId}`, {
+        await fetch(`/api/session/next?sessionId=${sessionId}`, {
           method: 'POST'
         }).then((response) => {
           if (response.redirected) {
