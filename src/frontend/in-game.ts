@@ -4,6 +4,7 @@ import { Question } from '../backend/database/quiz';
 document.addEventListener('DOMContentLoaded', initPage);
 
 const userNameElem = document.getElementById('username');
+const navItem2 = document.getElementById('nav-item-2');
 const questionTitleElem = document.getElementById('question-title');
 const answerBtnListElem = document.getElementById('answer-btn-list');
 const timerElem = document.getElementById('nav-timer');
@@ -81,6 +82,7 @@ async function initPage() {
     }
     let currQuestion = await fetchQuestion()
     //JSON.parse(window.localStorage.getItem('question')!) as Question;
+    navItem2!.innerHTML = `Game Pin: ${sessionId}`;
     timeLeft = currQuestion.timeLimit;
     if (timerElem == null) {
         console.error('Timer element not found');
