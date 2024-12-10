@@ -1,45 +1,5 @@
-import { clear } from "console";
-
-/*
-Question information such as time remaining, question number, and question text should be fetched into localstorage
-username should be stored cookie
-
-*/
-type Player = {
-    sessionId: number; // the id of the session
-    name: string; // the name of the player
-    score: number; // the score of the player
-}
-
-type Game = {
-    sessionId: number; // the unique session id
-    participants: Player[]; // list of participants
-    questions: Question[]; // list of questions loaded from quiz database
-    currentQuestion: number; // index of the current question
-    isStarted: boolean; //flag to indicate if the game has started
-}
-
-type Answer = {
-    questionIndex: number; // the index of the question
-    index: number; // the index of the answer
-    time: number; // the time taken to answer
-    PlayerName: string; // the name of the player
-}
-
-type Question = {
-    id: number;
-    type: "multiple" | "single"; // multiple: multiple choice, single: single choice
-    question: string; // the question text
-    options: string[]; // list of options
-    answer: number; // index of the correct answer
-    timeLimit: number; // time limit in seconds
-}
-
-type Quiz = {
-    id: number; // unique id of the quiz
-    name: string; // name of the quiz 
-    questions: Question[]; // list of questions
-}
+import { Answer } from '../backend/database/in-game';
+import { Question } from '../backend/database/quiz';
 
 document.addEventListener('DOMContentLoaded', initPage);
 
