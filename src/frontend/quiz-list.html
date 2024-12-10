@@ -9,7 +9,7 @@
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             margin: 0px;
             padding: 0px;
-            background-color: rgb(238, 162, 212);
+            background-color: #f5f5f5;
             color: white;
             min-height: 100vh;
         }
@@ -17,12 +17,20 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            
         }
         h1{
             text-align: center;
             margin: 30px 0;
             font-size: 2em;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: black;
+        }
+        .navigation{
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
         }
         .quiz-list{
             list-style: none;
@@ -37,13 +45,15 @@
             justify-content: space-between;
             display: flex;
             transition: transform 0.2s ease;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .quiz-item:hover{
             transform: translateY(-5px);
         }
         .quiz-details{
             flex-grow: 1;
-            color:blueviolet;
+            color:green;
         }
         .quiz-details h3{
             margin: 0 0 5px 0;
@@ -53,7 +63,7 @@
             margin: 0;
             color: #666
         }
-        .create-pin-btn{
+        .host-quiz-btn{
             background-color: green;
             color: white;
             border: none;
@@ -65,18 +75,42 @@
             letter-spacing: 1px;
             transition: all 0.2s ease;
         }
-        .create-pin-btn:hover{
+        .host-quiz-btn:hover{
             background-color: green;
             transform: scale(1.05);
         }
-        .session-panel{
-            display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-top: 30px;
-            text-align: center;
-            color: #3b1172;
+        .edit-quiz-btn{
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 10px;
+            transition: all 0.2s ease;
+        }
+        .edit-quiz-btn:hover{
+            background-color: green;
+            transform: scale(1.05);
+        }
+        .nav-btn{
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover{
+            background-color: green;
+            transform: scale(1.05);
         }
         .session-panel h2{
             color: #3b1172;
@@ -114,69 +148,36 @@
 </head>
 <body>
     <div class="container"> 
-        <h1>List of Quizzes</h1>
-        <ul id="quizList" class="quiz-list"></ul>
-
-        <div id="sessionPanel" class="session-panel">
-            <h2 id="activeQuizName"></h2>
-            <div class="pin-display">PIN: <span id="pinDisplay"></span></div>
-            <div class="player-count">Number of Players: <span id="playerCount">0</span></div>
-            <button id="startButton" class="start-button">Start Quiz</button>
+        <h1>Teradle Quizzes</h1>
+        <div class="navigation">
+            <button class="nav-btn" onclick="joinQuiz()">Join Quiz</button>
+            <button class="nav-btn" onclick="createQuiz()">Create Quiz</button>
         </div>
+
+        <ul id="quizList" class="quiz-list"></ul>
 
     </div>
     <script>
-        const dummyQuiz = [ /* for demo */ /* also api call */
-
+        const dummyQuiz = [ /* for demo */ /* replace with api call */
+            { id: 1, name: "US History Quiz", createdBy: "Benjamin Franklin" },
+            { id: 2, name: "Unit 2 Biology", createdBy: "Charles Darwin" },
+            { id: 3, name: "Algebra 2 Quiz", createdBy: "Issac Newton" }
         ];
-        function generatePin(){ /* strictly for demo */
-            return Math.floor(100000 + Math.random() * 900000);
+        function startQuiz(quizID){ /* redirect to questions once starting quiz */
+            window.location.href = `/host-quiz?id=${quizID}`;
         }
-        async function createSession(quizId, quizName){ /* would be an api call */
-            const pin = generatePin();
+        function joinQuiz(){ /* redirect to student join pin page page */
+            window.location.href = `/join-quiz`
+        }
+        function createQuiz(){ /* create new quiz id?? */
+            window.location.href = `/create-quiz`
+        }
+        function editQuiz(quizId){ /* redirect to edit quiz page with respective quizid */
+            window.location.href = `/edit-quiz?id=${quizId}`
+        }
 
-            document.getElementById('sessionPanel').style.display = 'block';
-            document.getElementById('activeQuizName').textContent = quizName;
-            document.getElementById('pinDisplay').textContent = pin;
-
-            playersJoining();
-        }
-        function playersJoining(){ /* strictly for demo */
-            let num = 0;
-            const players = setInterval(() => {
-                num++;
-                document.getElementById('playerCount').textContent = num;
-                if(num >= 10){
-                    clearInterval(players);
-                }
-            }, 2000);
-        }
-        /*function startQuiz(){ /* redirect to questions once starting quiz
-            const pin = document.getElementById('pinDisplay').textContent;
-            window.location.href = `/questions?pin=${pin}`;
-        }*/
-
-        //added to handle the start quiz button if the session
-        async function startQuiz() {
-            const pin = document.getElementById('pinDisplay').textContent;
-            try {
-                const response = await fetch(`/api/session/${pin}/start`, {
-                    method: 'POST'
-                });
-                if (response.ok) {
-                    window.location.href = `/questions?pin=${pin}`;
-                } else {
-                    alert('Failed to start the quiz.');
-                }
-            } catch (error) {
-                console.error('Error starting the quiz:', error);
-                alert('Failed to start the quiz.');
-            }
-        }
-      
         async function init (){
             const quizList = document.getElementById('quizList');
-
             const resp= await fetch(`/api/quiz/all`, {
                 method: 'GET',
                 headers: {
@@ -186,21 +187,24 @@
             const data = await resp.json()
             // data.push(data);
             // console.log("Dummy quiz: ", dummyQuiz[0]); 
-
+            
             data.forEach(quiz => { /* in our case it would be for each api call */
                 const li = document.createElement('li');
                 li.className = 'quiz-item';
                 li.innerHTML = `
                     <div class="quiz-details">
                         <h3>${quiz.name}</h3>
+                        <p>Created By: ${quiz.createdBy}</p>
                     </div> 
-                    <button class="create-pin-btn" onclick="createSession(${quiz.id}, '${quiz.name}')">
-                        Create PIN    
+                    <button class="host-quiz-btn" onclick="startQuiz(${quiz.id}, '${quiz.name}')">
+                        Host Quiz    
+                    </button>
+                    <button class="edit-quiz-btn" onclick="editQuiz(${quiz.id}, '${quiz.name}')">
+                        Edit Quiz
                     </button>
                 `;
                 quizList.append(li);
             });
-            document.getElementById('startButton').addEventListener('click', startQuiz);
         }
         window.addEventListener('load', init);
     </script>
