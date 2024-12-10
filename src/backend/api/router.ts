@@ -1,11 +1,6 @@
 import express from "express";
 
-<<<<<<< HEAD
-import { getTest } from "./test";
-import { getSingleQuiz, createQuiz, updateQuiz, deleteQuiz, getAllQuizzes} from "./quiz";
-=======
 import { getSingleQuiz, createQuiz, updateQuiz, getAllQuizzes} from "./quiz";
->>>>>>> a5f7f96 (delete)
 import { getSession, createSession, addParticipant, nextQuestion } from "./in-game";
 import { getLeaderboard } from "./leaderboard-scoring";
 import {joinQuiz, checkSessionStarted} from "./join-quiz";
