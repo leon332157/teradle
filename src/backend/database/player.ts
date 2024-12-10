@@ -94,6 +94,21 @@ export class PlayerDatabase {
     return leaderboard;
   }
 
+  async getPlayersForSession(sessionId: number): Promise<string[] | undefined> {
+    try {
+      const players = await PlayerModel.findAll({
+        attributes: ['name'],
+        where: { sessionId },
+      });
+      return players.map(player => player.name);
+    } catch (error) {
+      (reason: any) => {
+        console.error(reason);
+        return [];
+      }
+    };
+  }
+
   async getPlayerScore(sessionId: number, name: string): Promise<number> {
     const playerScore = PlayerModel.findOne({
       attributes: ['score'],
