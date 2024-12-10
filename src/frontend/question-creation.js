@@ -12,6 +12,8 @@ const questionTextInput = document.getElementById('question-text');
 
 let editingItem = null;
 let editingIndex = -1;
+let isUpdating = false;
+let pageQuizId;
 
 const Quiz = {
   name: '',
@@ -30,7 +32,7 @@ addQuestionButton.addEventListener('click', () => {
 saveQuestionButton.addEventListener('click', saveQuestion);
 
 // Function to save quiz
-saveQuizButton.addEventListener('click', saveQuiz);
+saveQuizButton.addEventListener('click', () => isUpdating ? updateQuiz(pageQuizId) : saveQuiz);
 
 // Close popup
 overlay.addEventListener('click', closePopup);
@@ -44,29 +46,48 @@ document.querySelectorAll('input[name="question-type"]').forEach((radio) => {
   radio.addEventListener('change', editAnswerOptions);
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const currentUrl = window.location.href;
+document.addEventListener('DOMContentLoaded', async () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const quizId = parseInt(searchParams.get("quizId"));
 
-  const url = new URL(currentUrl);
-
-  const op = url.searchParams.get('operation');
-  const id = url.searchParams.get('id');
-  if (op == 'edit' && id) {
-    loadQuiz();
+  console.log('Quiz ID:', quizId);
+  if (quizId) {
+    await loadQuiz(quizId);
+    isUpdating = true;
+    pageQuizId = quizId;
   }
 })
 
-async function loadQuiz() {
-  fetch(''); // correct API
-  const quizData = await response.json();
-  Quiz.name = quizData.name;
-  Quiz.questions = quizData.questions;
+async function loadQuiz(quizID) {
+  fetch(`api/quiz/single?quizId=${quizID}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(res => {
+      return res.json();
+    })
+    .then((quizData) => {
+      console.log(quizData);
+      if (!quizData || !quizData.id || !quizData.name || !Array.isArray(quizData.questions)) {
+        throw new Error('Invalid quiz data');
+      }
   
-  document.getElementById('quiz-name').value = Quiz.name;
-  Quiz.questions.forEach((question) => {
-    const questionItem = convertJSONtoHTML(question);
-    questionList.appendChild(questionItem);
-  });
+      Quiz.name = quizData.name;
+      Quiz.questions = quizData.questions;
+  
+      document.getElementById('quiz-name').value = Quiz.name;
+  
+      Quiz.questions.forEach((question) => {
+        const questionItem = convertJSONtoHTML(question);
+        questionList.appendChild(questionItem);
+      });
+    })
+    .catch ((e) =>{
+      console.error('Failed to load quiz:', e);
+      alert('Error: Could not load quiz. Please try again later.');
+    });
 }
 
 function saveQuiz() {
@@ -94,6 +115,35 @@ function saveQuiz() {
   .catch((error) => {
     console.error('Error saving quiz:', error);
     alert('Failed to save quiz.');
+  });
+}
+
+function updateQuiz(quizID) {
+  console.log('here');
+  const quizName = document.getElementById('quiz-name').value.trim();
+  Quiz.name = quizName;
+  if (!quizName) {
+    alert('Quiz name cannot be empty.');
+    return;
+  }
+
+  console.log('Updating quiz:', Quiz);
+  
+  fetch(`/api/quiz/update?quizId=${quizID}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({id: quizID, name: Quiz.name, questions: Quiz.questions}),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Quiz updated:', data);
+    alert('Quiz updated successfully!');
+  })
+  .catch((error) => {
+    console.error('Error updating quiz:', error);
+    alert('Failed to update quiz.');
   });
 }
 
