@@ -2,7 +2,7 @@ import { getQuizDatabase } from "../database";
 import { Request, Response } from "express";
 
 /**
-    * This function sends a singele quiz as json item, if the quiz is not found, it sends a 404
+    * This function sends a single quiz as json item, if the quiz is not found, it sends a 404
     * IT expects a quiz id in the request parameters, "api/quiz/single?id=<id>"
 */
 export async function getSingleQuiz(req:Request, res:Response) {
