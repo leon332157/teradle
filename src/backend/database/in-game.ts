@@ -29,12 +29,12 @@ export class GameController {
   * @param {number} quizId - the id of the quiz to create a session for
   * @returns Game - the created game object or Error if the quiz is not found
   */
-  async createSession(quizId: number): Promise<boolean> {
+  async createSession(quizId: number): Promise<number> {
     const quizDatabase = getQuizDatabase();
     const quizObj = await quizDatabase.getQuiz(quizId);
     if (!quizObj) {
-      console.error('Quiz not found');
-      return false;
+      console.error('[Game Controller][Create Session] Quiz not found');
+      return -1;
     }
 
     const sessionDatabase = getSessionDatabase();

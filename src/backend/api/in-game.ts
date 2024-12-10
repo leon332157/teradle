@@ -1,29 +1,45 @@
 import { getGameController } from "../database";
 import { Request, Response } from "express";
 
-// ** This function is responsible for creating a new session for the given quiz id
+/** 
+* This function is responsible for creating a new session for the given quiz id
+* @Response {object} onsuccess: { message: 'Session created successfully', pin: code }
+* @Response {object} onfailure: { message: 'Quiz not found', pin: -1 }
+*/
 export function createSession(req: Request, res: Response) {
   const quizId = parseInt(req.params.quizId);
   const gameController = getGameController();
-  const game = gameController.createSession(quizId);
-  if (game instanceof Error) {
-    res.status(404).send(game.message);
-  } else {
-    res.json(game);
-  }
+  gameController.createSession(quizId).then((code) => {
+    if (code !== -1) {
+      res.status(200).json({ message: 'Session created successfully', pin: code });
+    } else {
+      res.status(404).json({ message: 'Quiz not found', pin: -1 });
+    }
+  });
 }
+
+/**
+ * This function is responsible for starting the game session
+ * @Response {object} onsuccess: { message: 'Game session started successfully' }
+*/
 
 export function startGameSession(req: Request, res: Response) {
   const sessionId = parseInt(req.params.sessionId);
   const gameController = getGameController();
-  const success = gameController.startSession(sessionId);
-  if (success) {
-      res.json({ message: 'Game session started successfully' });
-  } else {
-      res.status(404).json({ error: 'Session not found' });
-  }
+  gameController.startSession(sessionId).then((success) => {
+    if (success) {
+      res.status(200).json({ message: 'Game session started successfully' });
+    } else {
+      res.status(404).send("Session not found");
+    }
+  });
 }
 
+/**
+ * This function is responsible for getting the game session
+ * @param req 
+ * @param res 
+ */
 export function getSession(req: Request, res: Response) {
   const sessionId = parseInt(req.params.sessionId);
   const gameController = getGameController();
@@ -35,25 +51,19 @@ export function getSession(req: Request, res: Response) {
   }
 }
 
-export async function addParticipant(req: Request, res: Response) {
-  const sessionId = parseInt(req.params.sessionId);
-  const participant = req.body;
-  const gameController = getGameController();
-  const success: boolean = await gameController.addParticipant(sessionId, participant);
-  if (success) {
-    res.send("Participant added");
-  } else {
-    res.status(404).send("Session not found");
-  }
-}
-
+/**
+ * This function is responsible for moving to the next question in the game session
+ * @param req 
+ * @param res 
+ */
 export function nextQuestion(req: Request, res: Response) {
   const sessionId = parseInt(req.params.sessionId);
   const gameController = getGameController();
-  const game = gameController.getSession(sessionId);
-  if (game) {
-    res.json(game.questions[game.currentQuestion]);
-  } else {
-    res.status(404).send("Session not found");
-  }
+  gameController.nextQuestion(sessionId).then((success) => {
+    if (success) {
+      res.send("Next question");
+    } else {
+      res.status(404).send("Session not found");
+    }
+  });
 }

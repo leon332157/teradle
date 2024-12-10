@@ -66,7 +66,7 @@ export class SessionDatabase {
   * @param quizId the id of the quiz to create a session for
   * @returns true if successful, false otherwise
   */
-  async createSession(quizId: number): Promise<boolean> {
+  async createSession(quizId: number): Promise<number> {
     const sessionId = Math.floor(Math.random() * 1000000);
     const newSessionSql = SessionModel.build({
       id:sessionId,
@@ -75,11 +75,11 @@ export class SessionDatabase {
     });
     try {
       await newSessionSql.save();
-      return true;
+      return sessionId;
     }
     catch (e) {
       console.error("[Session Database] Error saving session to database", e);
-      return false;
+      return -1;
     }
   }
 
