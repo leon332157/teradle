@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import { getSessionDatabase, getPlayerDatabase } from "../database";
 
 export function joinQuiz(req: Request, res: Response) {
-    const sessionId = parseInt(req.body.sessionId);
-    const playerName = req.body.playerName as string;
+    const sessionId = parseInt(req.query.sessionId as string);
+    const userName = req.body.userName as string;
     const sessionDatabase = getSessionDatabase();
     const playerDatabase = getPlayerDatabase();
     sessionDatabase.doesSessionExist(sessionId).then((exists) => {
         if (exists) {
-            playerDatabase.addPlayer(sessionId, playerName).then((success) => {
+            playerDatabase.addPlayer(sessionId, userName).then((success) => {
                 if (success) {
                     res.status(200).json({ message: 'Joined successfully' });
                 } else {
