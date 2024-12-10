@@ -35,11 +35,11 @@ export function getSession(req: Request, res: Response) {
   }
 }
 
-export function addParticipant(req: Request, res: Response) {
+export async function addParticipant(req: Request, res: Response) {
   const sessionId = parseInt(req.params.sessionId);
   const participant = req.body;
   const gameController = getGameController();
-  const success = gameController.addParticipant(sessionId, participant);
+  const success: boolean = await gameController.addParticipant(sessionId, participant);
   if (success) {
     res.send("Participant added");
   } else {

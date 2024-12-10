@@ -1,16 +1,55 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const leaderboard = document.querySelector('.display-top-players');
+(
+  async () => {
+    try {
+      const sessionId = new URLSearchParams(window.location.search).get('sessionId');
+      const leaderboard = await fetch(`api/leaderboard-scoring/getLeaderboard?sessionId=${sessionId}`);
 
-  if (leaderboard) {
-    const players = Array.from(leaderboard.getElementsByClassName('player')) as HTMLElement[];
+      if (!leaderboard.ok) {
+        throw new Error(`Failed to fetch leaderboard: ${leaderboard.status}`);
+      }
 
-    players.sort((a, b) => {
-      const scoreA = parseInt(a.querySelector('.player-score')?.textContent || '0', 10);
-      const scoreB = parseInt(b.querySelector('.player-score')?.textContent || '0', 10);
-      return scoreB - scoreA;
-    });
+      const leaderboardArray = await leaderboard.json();
 
-    leaderboard.innerHTML = '';
-    players.forEach(player => leaderboard.appendChild(player));
+      const leaderboardElement = document.querySelector('.display-top-players');
+
+      if (leaderboardElement === null) {
+        return;
+      }
+
+      leaderboardArray.forEach((player: { playerName: string, score: number }) => {
+        leaderboardElement.appendChild(getParticipantElement(player));
+      });
+
+      document.querySelector('.next-button')?.addEventListener('click', async () => {
+        console.log('next');
+        await fetch(`/next-question?sessionId=${sessionId}`, {
+          method: 'POST'
+        }).then((response) => {
+          if (response.redirected) {
+            window.location.href = response.url; // Redirect the browser to the new location
+          }
+        });
+      });
+    }
+    catch (error: any) {
+      console.error(`Error loading leaderboard: ${error.message}`);
+    }
   }
-})
+)();
+
+const getParticipantElement = (player: { playerName: string, score: number }) => {
+  const div = document.createElement("div");
+  div.className = "player";
+
+  const player_name = document.createElement("span");
+  player_name.className = "player-name";
+  player_name.innerHTML = player.playerName;
+
+  const player_score = document.createElement("span");
+  player_score.className = "player-score";
+  player_score.innerHTML = player.score.toString();
+
+  div.appendChild(player_name);
+  div.appendChild(player_score);
+  return div;
+}
