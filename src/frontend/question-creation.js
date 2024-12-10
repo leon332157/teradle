@@ -50,7 +50,7 @@ document.querySelectorAll('input[name="question-type"]').forEach((radio) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
   const searchParams = new URLSearchParams(window.location.search);
-  const quizId = parseInt(searchParams.get("quizId"));
+  const quizId = parseInt(searchParams.get("id"));
 
   console.log('Quiz ID:', quizId);
   if (quizId) {
