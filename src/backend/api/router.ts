@@ -1,10 +1,10 @@
 import express from "express";
 
-import { getTest } from "./test";
-import { getSingleQuiz, createQuiz, updateQuiz, deleteQuiz, getAllQuizzes} from "./quiz";
-import { getSession, createSession, addParticipant, nextQuestion } from "./in-game";
+import { getSingleQuiz, createQuiz, updateQuiz, getAllQuizzes, deleteQuiz } from "./quiz";
+import { getSession, createSession, nextQuestion, startGameSession } from "./in-game";
 import { getLeaderboard } from "./leaderboard-scoring";
-import {joinQuiz, checkSessionStarted} from "./join-quiz";
+import { joinQuiz, checkSessionStarted } from "./join-quiz";
+import { getParticipants } from "./session";
 
 export class ApiRouter {
   private router: express.Router;
@@ -16,24 +16,23 @@ export class ApiRouter {
 
   private initRoutes() {
     // quiz routes
-    this.router.get('/api/test', getTest);
     this.router.get('/api/quiz/single', getSingleQuiz);
     this.router.get('/api/quiz/all', getAllQuizzes);
     this.router.post('/api/quiz/create', createQuiz);
     this.router.put(`/api/quiz/update`, updateQuiz);
     this.router.delete(`/api/quiz/delete`, deleteQuiz);
-    this.router.get(`/api/quiz/getQuestion`, updateQuiz);
 
     // game routes
     this.router.get('/api/session', getSession)
-    this.router.get('/api/createSession', createSession)
-    this.router.get('/api/addParticipant', addParticipant)
-    this.router.post('/api/nextQuestion', nextQuestion)
-    this.router.get('/api/leaderboard-scoring/getLeaderboard', getLeaderboard);
+    this.router.get('/api/session/participants', getParticipants)
+    this.router.get('/api/session/started', checkSessionStarted)
+    this.router.post('/api/session/create', createSession)
+    this.router.post('/api/session/start', startGameSession)
+    this.router.post('/api/session/join', joinQuiz);
+    this.router.post('/api/session/next', nextQuestion);
 
-    //join quiz routes
-    this.router.post('/api/join', joinQuiz);
-    this.router.get('/api/session/:pin/started', checkSessionStarted);
+    // leaderboard routes
+    this.router.get('/api/leaderboard-scoring/getLeaderboard', getLeaderboard);
   }
 
   public getRouter() {

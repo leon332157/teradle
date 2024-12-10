@@ -19,7 +19,7 @@ export type Quiz = {
 // Initialize a new Sequelize instance with SQLite
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: join(__dirname, '..', '..', '..', 'quiz.db')
+  storage: join(__dirname, '..', '..', '..', 'database', 'quiz.db')
 });
 
 class QuizModel extends Model<InferAttributes<QuizModel>, InferCreationAttributes<QuizModel>> {
@@ -59,6 +59,11 @@ export class QuizDatabase {
     await sequelize.sync();
   }
 
+  /**
+   * 
+   * @param quiz quiz object to be created
+   * @returns boolean true if successful, false otherwise
+   */
   async createQuiz(quiz: Quiz): Promise<boolean> {
     const newQuizSql = QuizModel.build({
       name: quiz.name,
@@ -73,21 +78,32 @@ export class QuizDatabase {
       return false;
     }
   }
-    /*
-    * Get a quiz by its id
-    * @param id the id of the quiz
-    * @returns the quiz with the given id, null if not found
-    */
-    async getQuiz(id: number): Promise<Quiz> {
-        const res = await QuizModel.findByPk(id);
-        return res as Quiz;
-    }
 
-    async getAllQuizzes(id: number): Promise<Quiz[]> {
-        const res = await QuizModel.findAll();
-        return res as Quiz[];
-    }
+  /**
+  * Get a quiz by its id
+  * @param id the id of the quiz
+  * @returns the quiz with the given id, null if not found
+  */
+  async getQuiz(id: number): Promise<Quiz> {
+    const res = await QuizModel.findByPk(id);
+    return res as Quiz;
+  }
 
+  /**
+   * Get all quizzes
+   * @returns array of all quizzes
+  */
+  async getAllQuizzes(id: number): Promise<Quiz[]> {
+    const res = await QuizModel.findAll();
+    return res as Quiz[];
+  }
+
+  /**
+   * Get a question from a quiz
+   * @param quizId the id of the quiz
+   * @param questionNumber the question number
+   * @returns the question object
+  */
   async getQuestion(quizId: number, questionNumber: number): Promise<Question> {
     return await QuizModel.findOne({
       attributes: ['questions'],
@@ -100,14 +116,12 @@ export class QuizDatabase {
       });
   }
 
-
-  /*
+  /**
   * updates a quiz by its id
   * @param id the id of the quiz
   * @param quiz the quiz object
   * @return true if successful, false otherwise
   */
-
   updateQuiz(id: number, quiz: Quiz): Promise<boolean> {
     return QuizModel.update({
       name: quiz.name,
@@ -119,12 +133,11 @@ export class QuizDatabase {
     }).then(() => true).catch(() => false);
   }
 
-  /*
+  /**
   * deletes a quiz by its id
   * @param id the id of the quiz
   * @return true if successful, false otherwise
   */
-
   deleteQuiz(id: number) {
     return QuizModel.destroy({
       where: {
