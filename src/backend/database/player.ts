@@ -94,7 +94,7 @@ export class PlayerDatabase {
     return leaderboard;
   }
 
-  async getPlayersForSession(sessionId: number): Promise<string[] | undefined> {
+  async getPlayersForSession(sessionId: any): Promise<string[] | undefined> {
     try {
       const players = await PlayerModel.findAll({
         attributes: ['name'],
