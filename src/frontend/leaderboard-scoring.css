@@ -1,0 +1,90 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #ff8aad;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.leaderboard-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.leaderboard-title {
+  text-align: center;
+  font-size: 50px;
+  font-weight: bold;
+  padding: 25px;
+  background-color: #87273d;
+  color: white;
+  margin: 50px auto 2px auto;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.display-top-players {
+  flex: 1;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+  background-color: #87273d;
+  color: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 950px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.player-name {
+  font-size: 30px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.player-score {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.next-button {
+  position: fixed;
+  top: 30px;
+  right: 32px;
+  padding: 8px 11px;
+  background-color: #87273d;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: white;
+  cursor: pointer;
+}
+
+.next-button button {
+  border: none;
+  background: none;
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.next-button:hover {
+  background-color: #e9658d;
+}

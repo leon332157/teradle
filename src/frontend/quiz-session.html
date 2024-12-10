@@ -1,33 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Session</title>
-    <link rel="stylesheet" href="quiz-session.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Teradle</title>
+  <link rel="stylesheet" href="quiz-session.css">
 </head>
+
 <body>
-    <header id="pin-container">
-        <p>Welcome to Teradle!</p>
-        <div id="session-details">
-            <p>Game PIN:</p>
-            <p id="pin"></p> <!-- Game Pin -->
-        </div>
-    </header>
-
-     <main>
-        <div id="player-count">0 Players</div> <!-- Number of Players Joined -->
-        <div start="start-button">Start</div>
-        <div id="player-list">
-             <!-- Player names -->
-        </div>
-    </main>
-
-    <footer id="footer">
-        Waiting for players...
-    </footer>
-
-    <script src="index.ts"></script>
+  <div class="quiz-container">
+    <p class="game-pin">Game PIN: <span id="pin"></span></p>
+    <div class="quiz-title">Welcome to Teradle!</div>
+    <div class="session-details">
+      <p class="player-count" id="player-count">12 Players</p>
+      <div class="player-list" id="player-list">
+        <!-- Players dynamically added here -->
+      </div>
+    </div>
+    <div class="start-button">
+      <button id="start-button">Start</button>
+    </div>
+  </div>
+  <footer id="footer">
+    Waiting for players...
+  </footer>
+  <script src="quiz-session.js"></script>
 </body>
+
 </html>
+
+
+
+  

@@ -1,4 +1,5 @@
 const addQuestionButton = document.getElementById('add-question');
+const saveQuizButton = document.getElementById('save-quiz');
 const questionPopup = document.getElementById('question-popup');
 const overlay = document.getElementById('overlay');
 const closePopupButton = document.getElementById('close-popup');
@@ -9,6 +10,16 @@ const timeLimitError = document.getElementById('time-limit-error');
 const answerList = document.getElementById('answer-list');
 const questionTextInput = document.getElementById('question-text');
 
+let editingItem = null;
+let editingIndex = -1;
+let isUpdating = false;
+let pageQuizId;
+
+const Quiz = {
+  name: '',
+  questions: [],
+};
+
 // Show popup for adding a question
 addQuestionButton.addEventListener('click', () => {
   questionPopup.classList.add('active');
@@ -16,6 +27,12 @@ addQuestionButton.addEventListener('click', () => {
   timeLimitError.textContent = ''; // Clear any previous error messages
   validateInputs(); 
 });
+
+// Function to save question
+saveQuestionButton.addEventListener('click', saveQuestion);
+
+// Function to save quiz
+saveQuizButton.addEventListener('click', () => isUpdating ? updateQuiz(pageQuizId) : saveQuiz);
 
 // Close popup
 overlay.addEventListener('click', closePopup);
@@ -28,6 +45,107 @@ questionTextInput.addEventListener('input', validateInputs); // Validate on ques
 document.querySelectorAll('input[name="question-type"]').forEach((radio) => {
   radio.addEventListener('change', editAnswerOptions);
 });
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const quizId = parseInt(searchParams.get("quizId"));
+
+  console.log('Quiz ID:', quizId);
+  if (quizId) {
+    await loadQuiz(quizId);
+    isUpdating = true;
+    pageQuizId = quizId;
+  }
+})
+
+async function loadQuiz(quizID) {
+  fetch(`api/quiz/single?quizId=${quizID}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(res => {
+      return res.json();
+    })
+    .then((quizData) => {
+      console.log(quizData);
+      if (!quizData || !quizData.id || !quizData.name || !Array.isArray(quizData.questions)) {
+        throw new Error('Invalid quiz data');
+      }
+  
+      Quiz.name = quizData.name;
+      Quiz.questions = quizData.questions;
+  
+      document.getElementById('quiz-name').value = Quiz.name;
+  
+      Quiz.questions.forEach((question) => {
+        const questionItem = convertJSONtoHTML(question);
+        questionList.appendChild(questionItem);
+      });
+    })
+    .catch ((e) =>{
+      console.error('Failed to load quiz:', e);
+      alert('Error: Could not load quiz. Please try again later.');
+    });
+}
+
+function saveQuiz() {
+  const quizName = document.getElementById('quiz-name').value.trim();
+  Quiz.name = quizName;
+  if (!quizName) {
+    alert('Quiz name cannot be empty.');
+    return;
+  }
+
+  console.log('Saving quiz:', Quiz);
+  
+  fetch('/api/quiz/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(Quiz),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Quiz saved:', data);
+    alert('Quiz saved successfully!');
+  })
+  .catch((error) => {
+    console.error('Error saving quiz:', error);
+    alert('Failed to save quiz.');
+  });
+}
+
+function updateQuiz(quizID) {
+  console.log('here');
+  const quizName = document.getElementById('quiz-name').value.trim();
+  Quiz.name = quizName;
+  if (!quizName) {
+    alert('Quiz name cannot be empty.');
+    return;
+  }
+
+  console.log('Updating quiz:', Quiz);
+  
+  fetch(`/api/quiz/update?quizId=${quizID}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({id: quizID, name: Quiz.name, questions: Quiz.questions}),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Quiz updated:', data);
+    alert('Quiz updated successfully!');
+  })
+  .catch((error) => {
+    console.error('Error updating quiz:', error);
+    alert('Failed to update quiz.');
+  });
+}
 
 // Function to close the popup and clear the form
 function closePopup() {
@@ -109,67 +227,119 @@ function editAnswerOptions() {
   validateInputs();
 }
 
-// Function to save question
-saveQuestionButton.addEventListener('click', saveQuestion); // Ensure button click triggers save
-
 function saveQuestion() {
-  console.log('Attempting to save question...'); // Debug log
   const questionText = questionTextInput.value.trim();
   const questionType = document.querySelector('input[name="question-type"]:checked')?.value;
   const timeLimit = parseInt(timeLimitInput.value);
+  const options = [];
+  let answer = -1;
 
-  if (!questionText || !questionType || isNaN(timeLimit)) {
-    console.error('Missing required fields'); // Log error if fields are missing
-    return;
-  }
-
-  const answers = [];
-  let correctAnswer = null;
-
-  answerList.querySelectorAll('li').forEach((li) => {
+  answerList.querySelectorAll('li').forEach((li, i) => {
     const answerText = li.querySelector('input[type="text"]').value;
     const isCorrect = li.querySelector('input[type="radio"]').checked;
-    answers.push(answerText);
-    if (isCorrect) correctAnswer = answerText;
+    options.push(answerText);
+    if (isCorrect) answer = i;
   });
 
-  // Create a question item for the list
-  const questionItem = document.createElement('li');
-  questionItem.classList.add('question-item');
-
-  questionItem.innerHTML = `
-    <div class="question-header">
-      <p><strong></strong></p> <!-- Placeholder for dynamic numbering -->
-      <p><em>Time Limit: ${timeLimit}s</em></p>
-      <p>${questionText}</p>
-    </div>
-    <div class="answer-container">
-      ${answers.map(answer => `<p class="answer-item">${answer} ${answer === correctAnswer ? '(Correct)' : ''}</p>`).join('')}
-    </div>
-  `;
-  
-  const deleteButton = document.createElement('button');
-  deleteButton.classList.add('delete-button');
-  deleteButton.textContent = 'Delete';
-  deleteButton.onclick = () => {
-    questionItem.remove();
-    renumberQuestions(); // Renumber questions after deletion
+  const Question = {
+    type: questionType === 'multiple-choice' ? 'multiple' : 'single',
+    question: questionText,
+    options: options,
+    answer: answer,
+    timeLimit: timeLimit,
   };
 
-  questionItem.appendChild(deleteButton);
-  questionList.appendChild(questionItem);
+  const questionItem = convertJSONtoHTML(Question);
 
-  console.log('Question saved successfully.'); // Confirm save success
-  renumberQuestions(); // Renumber questions after adding a new one
+  // Append or replace the question item
+  if (editingItem && editingIndex >= 0) {
+    questionList.replaceChild(questionItem, editingItem);
+    Quiz.questions[editingIndex] = Question;
+    editingItem = null;
+    editingIndex = -1;
+  } else {
+    questionList.appendChild(questionItem);
+    Quiz.questions.push(Question);
+  }
+
+  closePopup();
+  renumberQuestions();
   clearForm();
+}
+
+function convertJSONtoHTML (question) {
+  const questionText = question.question;
+  const answers = question.options;
+  const answerIndex = question.answer;
+  const timeLimit = question.timeLimit;
+  const questionType = question.type === 'multiple' ? 'multiple-choice' : 'true-false';
+  // Use the question template
+  console.log(question);
+  const template = document.getElementById('question-template');
+  const questionItem = template.content.cloneNode(true);
+
+  // Fill the template with question data
+  questionItem.querySelector('.question-title').textContent = `${questionText}`;
+  questionItem.querySelector('.time-limit').textContent = `Time Limit: ${timeLimit}s`;
+
+  const answerContainer = questionItem.querySelector('.answer-container');
+  
+  answers.forEach((answer) => {
+    const answerElement = document.createElement('p');
+    answerElement.classList.add('answer-item');
+    answerElement.textContent = `${answer}${answer === answers[answerIndex] ? ' (Correct)' : ''}`;
+    answerContainer.appendChild(answerElement);
+  });
+
+  // Add event listeners for edit and delete buttons
+  const editButton = questionItem.querySelector('.edit-button');
+  const deleteButton = questionItem.querySelector('.delete-button');
+
+  editButton.onclick = () => {
+    // Set editing state
+    const questionItems = Array.from(document.querySelectorAll('.question-item'));
+    editingItem = editButton.closest('.question-item');
+    editingIndex = questionItems.indexOf(editingItem);
+    questionPopup.classList.add('active');
+    overlay.classList.add('active');
+
+    // Populate form with current question data
+    timeLimitInput.value = timeLimit;
+    questionTextInput.value = questionText;
+    document.querySelector(`input[value="${questionType}"]`).checked = true;
+    editAnswerOptions();
+    answerList.querySelectorAll('li').forEach((li, i) => {
+      li.querySelector('input[type="text"]').value = answers[i];
+      li.querySelector('input[type="radio"]').checked = i === answerIndex;
+    });
+    validateInputs();
+  };
+
+  deleteButton.onclick = () => {
+    const questionItems = Array.from(document.querySelectorAll('.question-item'));  
+    const itemToDelete = deleteButton.closest('.question-item');
+    const index = questionItems.indexOf(itemToDelete);
+    console.log(index);
+    itemToDelete.remove();
+    Quiz.questions = Quiz.questions.filter((_, i) => i !== index);
+    renumberQuestions();
+  };
+
+  return questionItem;
 }
 
 // Function to renumber questions
 function renumberQuestions() {
   const questionItems = document.querySelectorAll('.question-item');
-  questionItems.forEach((item, index) => {
-    const questionNumberElement = item.querySelector('.question-header p strong');
-    questionNumberElement.textContent = `${index + 1}. ${item.querySelector('.question-header').textContent.includes('True/False') ? 'True/False' : 'Multiple Choice'} Question`;
+  questionItems.forEach((item) => {
+    const questionHeader = item.querySelector('.question-header');
+    const questionTitleElement = questionHeader?.querySelector('.question-title');
+
+    if (questionTitleElement) {
+      questionTitleElement.textContent = `${questionTitleElement.textContent}`;
+    } else {
+      console.error('Invalid question item structure:', item);
+    }
   });
 }
 
