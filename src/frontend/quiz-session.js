@@ -18,11 +18,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     sessionPin.innerText = sessionId;
     // Now that sessionId is available, start fetching player list
     setInterval(async () => {
-            const playerList = document.getElementById('player-list');
-            const playerCount = document.getElementById('player-count');
-            const players = await getSessionPlayers();
-            updatePlayerList(players, playerList, playerCount);
-        }, 1000);
+        const playerList = document.getElementById('player-list');
+        const playerCount = document.getElementById('player-count');
+        const players = await getSessionPlayers();
+        updatePlayerList(players, playerList, playerCount);
+    }, 1000);
 
     const startButton = document.getElementById('start-button');
     if (startButton) {
@@ -53,14 +53,14 @@ function startGame() {
         fetch(`/api/session/start?sessionId=${sessionId}`, { method: 'POST' })
             .then(response => response.json())
             .then(data => {
-            if (data.message === 'Game session started successfully') {
-                alert('Game started!');
-                window.location.href = '/in-game/instructor?sessionId=' + sessionId;
-            }
-            else {
-                alert('Failed to start game.');
-            }
-        })
+                if (data.message === 'Game session started successfully') {
+                    alert('Game started!');
+                    window.location.href = '/in-game/instructor?sessionId=' + sessionId;
+                }
+                else {
+                    alert('Failed to start game.');
+                }
+            })
             .catch(error => console.error('Error:', error));
     }
     else {
