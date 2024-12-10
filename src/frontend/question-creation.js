@@ -1,5 +1,6 @@
 const addQuestionButton = document.getElementById('add-question');
 const saveQuizButton = document.getElementById('save-quiz');
+const deleteQuizButton = document.getElementById('delete-quiz');
 const questionPopup = document.getElementById('question-popup');
 const overlay = document.getElementById('overlay');
 const closePopupButton = document.getElementById('close-popup');
@@ -33,6 +34,7 @@ saveQuestionButton.addEventListener('click', saveQuestion);
 
 // Function to save quiz
 saveQuizButton.addEventListener('click', () => isUpdating ? updateQuiz(pageQuizId) : saveQuiz());
+deleteQuizButton.addEventListener('click', () => {if (isUpdating) {deleteQuiz(pageQuizId)}});
 
 // Close popup
 overlay.addEventListener('click', closePopup);
@@ -145,6 +147,27 @@ function updateQuiz(quizID) {
   .catch((error) => {
     console.error('Error updating quiz:', error);
     alert('Failed to update quiz.');
+  });
+}
+
+function deleteQuiz(quizID) {
+  fetch(`/api/quiz/delete?quizId=${quizID}`, {
+    method: 'DELETE',
+  })
+  .then((response) => {
+    if (response.ok) {
+      const data = response.json();
+      console.log('Quiz deleted:', data);
+      alert('Quiz deleted successfully!');
+      window.location.href = "/";
+    } else {
+      console.error('Error deleting quiz');
+      alert('Failed to delete quiz.');
+    }
+  })
+  .catch((error) => {
+    console.error('Error deleting quiz:', error);
+    alert('Failed to delete quiz.');
   });
 }
 

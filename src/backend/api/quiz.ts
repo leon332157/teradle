@@ -72,3 +72,13 @@ export async function updateQuiz(req:Request, res:Response) {
         res.status(401).send({message: 'Error occured'});
     }
 }
+
+export async function deleteQuiz(req:Request, res:Response) {
+    const quizDatabase = getQuizDatabase();
+    if (await quizDatabase.deleteQuiz(parseInt(req.query.quizId as string))) {
+        res.json({message: 'Quiz deleted'});
+    } else {
+        res.status(401).send({message: 'Error occured'});
+    }
+
+}
