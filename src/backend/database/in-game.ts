@@ -2,6 +2,7 @@ import { Question, Quiz, QuizDatabase, } from './quiz';
 import { getPlayerDatabase, getQuizDatabase, getSessionDatabase } from '.';
 import { SessionDatabase } from './session';
 import { Player } from './player';
+import { currentQuestion } from '../api/in-game';
 
 
 export type Game = {
@@ -166,7 +167,8 @@ export class GameController {
     const quizDatabase = getQuizDatabase();
     const sessionDatabase = getSessionDatabase();
     const quizID = await sessionDatabase.getQuizId(sessionId);
-    const question = await quizDatabase.getQuestion(quizID, answer.questionIndex);
+    const currentQuestion = await sessionDatabase.getCurrentQuestionNumber(sessionId);
+    const question = await quizDatabase.getQuestion(quizID, currentQuestion);
     const isCorrect = question.answer === answer.index;
     if (isCorrect) {
       await playerDatabase.increasePlayerScore(sessionId, answer.PlayerName, (question.timeLimit - answer.time) * 100);

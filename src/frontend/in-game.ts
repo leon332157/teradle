@@ -139,7 +139,7 @@ function handleButtonClick(event: Event) {
         time: timeLeft,
         PlayerName: userName
     };
-    fetch('/api/session/answer', {
+    fetch("/api/session/answer?sessionId="+sessionId, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
