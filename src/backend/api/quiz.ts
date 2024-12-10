@@ -7,12 +7,28 @@ import { Request, Response } from "express";
 */
 export function getSingleQuiz(req:Request, res:Response) {
     const quizDatabase = getQuizDatabase();
-    const quiz = quizDatabase.getQuiz(parseInt(req.params.id));
-    if (quiz) {
-        res.json(quiz);
-    } else {
-        res.status(404).send('Quiz not found');
-    }
+    quizDatabase.getQuiz(parseInt(req.query.id as string))
+    .then(data => {
+        console.log("Quiz returned: ", data);
+        if (data) {
+            res.json(data);
+        } else {
+            res.status(404).send('Quiz not found');
+        }
+    });
+}
+
+export function getAllQuizzes(req:Request, res:Response) {
+    const quizDatabase = getQuizDatabase();
+    quizDatabase.getAllQuizzes(parseInt(req.query.id as string))
+    .then(data => {
+        console.log("Quiz returned: ", data);
+        if (data) {
+            res.json(data);
+        } else {
+            res.status(404).send('Quiz not found');
+        }
+    });
 }
 
 /**

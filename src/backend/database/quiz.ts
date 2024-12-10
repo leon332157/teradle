@@ -84,6 +84,11 @@ export class QuizDatabase {
         return res as Quiz;
     }
 
+    async getAllQuizzes(id: number): Promise<Quiz[]> {
+        const res = await QuizModel.findAll();
+        return res as Quiz[];
+    }
+
     /*
     * updates a quiz by its id
     * @param id the id of the quiz

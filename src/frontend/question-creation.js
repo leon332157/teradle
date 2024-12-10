@@ -79,7 +79,7 @@ function saveQuiz() {
 
   console.log('Saving quiz:', Quiz);
   
-  fetch('/api/quiz', {
+  fetch('/api/quiz/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

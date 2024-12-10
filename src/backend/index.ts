@@ -22,7 +22,7 @@ frontendRouter.get('/quiz-list', (req, res) => {
 });
 
 frontendRouter.get('/create-quiz', (req, res) => {
-  res.sendFile(join(dirname(__filename), '..', 'create-quiz.html'));
+  res.sendFile(join(dirname(__filename), '..', 'question-creation.html'));
 });
 
 frontendRouter.get('/join-quiz', (req, res) => {
