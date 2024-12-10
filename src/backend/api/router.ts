@@ -1,7 +1,7 @@
 import express from "express";
 
 import { getTest } from "./test";
-import { getSingleQuiz, createQuiz, updateQuiz } from "./quiz";
+import { getSingleQuiz, createQuiz, updateQuiz, getAllQuizzes} from "./quiz";
 import { getSession, createSession, addParticipant, nextQuestion } from "./in-game";
 import { getLeaderboard } from "./leaderboard-scoring";
 
