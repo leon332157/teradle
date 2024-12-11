@@ -155,7 +155,8 @@ function endQuestion() {
             }).then((response) => {
                 if (response.status === 302) {
                     clearInterval(checkNextEvent);
-                    initPage();
+                    window.location.reload(); // FIXME: this is a hack, should be replaced with a more elegant solution
+                    //initPage();
                 }
             })
         }, 10);
